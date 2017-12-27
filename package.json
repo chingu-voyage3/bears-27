@@ -11,8 +11,15 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^4.0.0",
+    "ejs": "^2.5.7",
     "express": "~4.15.5",
-    "morgan": "~1.9.0"
+    "googleapis": "^23.0.0",
+    "mongoose": "^4.13.7",
+    "mongoose-findorcreate": "^2.0.0",
+    "morgan": "~1.9.0",
+    "passport": "^0.4.0",
+    "yelp": "^1.0.2",
+    "yelp-fusion": "^2.0.3"
   },
   "devDependencies": {
     "jest": "^21.2.1"
