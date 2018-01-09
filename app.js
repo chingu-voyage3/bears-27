@@ -49,7 +49,10 @@ let food = require('./routes/food')
 app.use('/food', food)
 let auth = require('./routes/auth')
 app.use('/auth', auth)
-
+let events = require('./routes/events')
+app.use('/events', events)
+let users = require('./routes/user')
+app.use('/users', users)
 //TODO: Remove this
 let test = require('./routes/test');
 app.use('/test', test);

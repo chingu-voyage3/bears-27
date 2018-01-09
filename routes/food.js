@@ -15,16 +15,14 @@ router.get('/json/near/:zipcode/category/:category', function (req, res) {
     // But if you do bars it will only return bars.
     // this causes the problem of typos, but if we make it so that the user cannot/doesnt directly access the API
     // this might be fine? 
-    console.log(zipcode);
-    console.log(category);
-        client.search({
-            categories: category,
-            location: zipcode
-        }).then(yelpdata => {
-            res.send(yelpdata);
-        }).catch(yelperror => {
-            res.send(yelperror);
-        })
+    client.search({
+        categories: category,
+        location: zipcode
+    }).then(yelpdata => {
+        res.send(yelpdata);
+    }).catch(yelperror => {
+        res.send(yelperror);
+    })
   });
 
 router.get('/json/near/:zipcode', function (req, res) {

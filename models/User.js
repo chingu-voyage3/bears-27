@@ -1,4 +1,4 @@
-// grab the things we need
+//NOTE: The user object that is in the request parameter does not update after login.
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let TripEventSchema = require('./TripEvent');
@@ -64,7 +64,8 @@ userSchema.statics.addPlannedEvent = function(googleID, eventID, callback) {
     .then((result) => {
       user.plannedEvents.push(result._id);
       user.save()
-      .then(() => {
+      .then((user) => {
+        console.log(user)
         callback(null, true)
       })
       .catch((error) => {
@@ -89,6 +90,7 @@ userSchema.statics.findOrCreate = function(googleID, lastName, firstName, callba
         return callback(err, null)
       }
       else if (!user){
+        //TODO: Make users with more than just ID's and names
         newUser = {
           googleID: googleID, 
           name: firstName + " " + lastName, 
