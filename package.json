@@ -13,6 +13,7 @@
     "dotenv": "^4.0.0",
     "ejs": "^2.5.7",
     "express": "~4.15.5",
+    "express-session": "^1.15.6",
     "googleapis": "^23.0.0",
     "mongoose": "^4.13.7",
     "mongoose-findorcreate": "^2.0.0",

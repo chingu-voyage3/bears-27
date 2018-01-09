@@ -1,12 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var passport = require('passport');
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+var express = require('express');
+var mongoose = require('mongoose');
 var passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var User = require('../models/User');
-
+var GoogleStrategy = require('passport-google-oauth2').Strategy;
+var router = express.Router();
 
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
@@ -14,11 +13,32 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3001/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-       User.findOrCreate({ googleId: profile.id }, function (err, user) {
-         return done(err, user);
+    console.log("MONGO::: " + mongoose.connection.readyState);    
+       User.findOrCreate(profile.id, profile.name.familyName, profile.name.givenName, 
+        function (err, user) {
+            return done(err, user);
        });
   }
 ));
+
+passport.serializeUser(function(user, cb) {
+    cb(null, user);
+  });
+  
+  passport.deserializeUser(function(obj, cb) {
+    cb(null, obj);
+  });
+
+// GET /auth/google
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Google authentication will involve
+//   redirecting the user to google.com.  After authorization, Google
+//   will redirect the user back to this application at /auth/google/callback
+router.get('/google',
+passport.authenticate('google',
+ { scope: ['profile'] })
+);
+
 
 // GET /auth/google/callback
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -26,20 +46,11 @@ passport.use(new GoogleStrategy({
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 router.get('/google/callback', 
-passport.authenticate('google', { failureRedirect: '/login' }),
+    passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
-        res.redirect('http://localhost:3001/profile');
+        res.redirect('/profile');
     });
 
-
-// GET /auth/google
-//   Use passport.authenticate() as route middleware to authenticate the
-//   request.  The first step in Google authentication will involve
-//   redirecting the user to google.com.  After authorization, Google
-//   will redirect the user back to this application at /auth/google/callback
-router.get('/google/login',
-    passport.authenticate('google',
-     { scope: ['https://www.googleapis.com/auth/plus.login'] }));
 
 
 

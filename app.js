@@ -5,9 +5,16 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var mongoose = require('mongoose');
-const MONGO_URI = process.env.MONGO_URI
+var passport = require('passport');
+
+const MONGO_URI = process.env.MONGO_DB
 var app = express();
-mongoose.connect(process.env.MONGO_URI);
+mongoose.Promise = global.Promise;
+
+mongoose.connect(MONGO_URI, {
+  useMongoClient: true
+});
+
 
 
 // Use EJS at the default view engine.
@@ -18,9 +25,16 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+console.log("MONGO::: " + mongoose.connection.readyState);
+
 
 // Serve static assets
 app.use(express.static(path.resolve(__dirname, 'client', 'public')));
+
+// Needed for login
+app.use(require('express-session')({ secret: 'random string', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 //CORS
 app.use(function(req, res, next) {
@@ -35,6 +49,10 @@ let food = require('./routes/food')
 app.use('/food', food)
 let auth = require('./routes/auth')
 app.use('/auth', auth)
+
+//TODO: Remove this
+let test = require('./routes/test');
+app.use('/test', test);
 
 
 // // catch 404 and forward to error handler
