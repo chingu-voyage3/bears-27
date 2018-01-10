@@ -53,6 +53,9 @@ let events = require('./routes/events')
 app.use('/events', events)
 let users = require('./routes/user')
 app.use('/users', users)
+let itineraries = require('./routes/itineraries')
+app.use('/itineraries', itineraries)
+
 //TODO: Remove this
 let test = require('./routes/test');
 app.use('/test', test);

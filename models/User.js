@@ -82,7 +82,7 @@ userSchema.statics.addPlannedEvent = function(googleID, eventID, callback) {
 }
 userSchema.statics.findOrCreate = function(googleID, lastName, firstName, callback){
   console.log("MONGO STATE::: " + mongoose.connection.readyState);
-  
+  //TODO: Determine if I actually need all of these catch statements. 
   this.findOne(
     {"googleID": googleID},
     function(err, user){
