@@ -57,6 +57,8 @@ let users = require('./routes/user')
 app.use('/users', users)
 let itineraries = require('./routes/itineraries')
 app.use('/itineraries', itineraries)
+let places = require('./routes/places')
+app.use('/json/places', places)
 
 let test = require('./routes/test')
 app.use('/test', test)

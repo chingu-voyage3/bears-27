@@ -8,7 +8,7 @@ const client = yelp.client(YELP_API_KEY);
 
 
 let TripEventSchema = new Schema({
-
+    locationID: String,
     locationName: String,
     rating: Number,
     address: String,
@@ -18,12 +18,29 @@ let TripEventSchema = new Schema({
     PriceTier: Number,
 
 });
-TripEventSchema.statics.createNewEvent = (eventSource, placeName , date, callback) => {
+
+TripEventSchema.statics.findOrCreate = (eventSource, placeID , date, callback) => {
+    TripEvent.find({"locationID": placeID})
+    .then((result) => {
+        console.log(result)
+        if(result.length === 0){
+            console.log("Creating new event");
+            TripEvent.createNewEvent(eventSource, placeID, date, callback);
+        }
+        else {
+            callback(null, result)
+        }
+    }).catch((error) => {
+        callback(error, null)
+    })
+}
+TripEventSchema.statics.createNewEvent = (eventSource, placeID , date, callback) => {
     if(String(eventSource).toLowerCase() == 'yelp'){
         //Request the event with the given ID from yelp. 
-        client.business(placeName)
+        client.business(placeID)
             .then((result) => {
                 let newEvent = {
+                    locationID: result.jsonBody.id, 
                     locationName: result.jsonBody.name,
                     rating: result.jsonBody.rating, 
                     address: result.jsonBody.location.display_address[0] + 
@@ -31,15 +48,14 @@ TripEventSchema.statics.createNewEvent = (eventSource, placeName , date, callbac
                     possiblyAttending: [], 
                     confirmedAttending: [], 
                     EventDate: new Date(date), 
-                    PriceTier: result.jsonBody.price.length
+                    PriceTier: result.jsonBody.price ? result.jsonBody.price.length : null
                 }
-                TripEvent.create(newEvent).then((doc) =>
-                    { console.log(doc._id) }
+                TripEvent.create(newEvent).then((result) =>
+                    { callback(null, result) }
                 ).catch((error) => {
                     console.log(error);
+                    callback(error, null)
                 })
-                // console.log(result)
-                callback(null, result)
             })
             .catch((error) => {
                 console.log(error)
