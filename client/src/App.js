@@ -6,6 +6,7 @@ import Map from './Map/Map';
 import MapPopup from './Map/MapPopup';
 import Panel from './Panel/Panel';
 import './App.css';
+import TripCard from './components/TripCard'
 
 
 const KEY_IP_LOC = '02c1559982a189';
