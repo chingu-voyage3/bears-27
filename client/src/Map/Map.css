@@ -1,0 +1,78 @@
+.mapContainer {
+    height: 100%;
+}
+
+#mapid { 
+    height: 100%; 
+    z-index: 10;
+}
+
+.easy-button-container > button {
+    color: black;
+    background-color: white;
+    /* border-width: 0; */
+    border-color: white;
+}
+.easy-button-container > button:hover {
+    background-color: #f4f4f4;
+}
+
+.star{
+    font-size: 1.5em;
+}
+
+.popUpContainer {
+    position: absolute;
+    bottom: 0; 
+    left: 0; 
+    width: 100%;
+    margin-bottom: 2rem !important;
+    z-index: 99;
+}
+
+.popUp {
+    color: black;
+    background-color: #fff;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3)
+}
+
+
+.leaflet-popup > a.leaflet-popup-close-button {
+    display: none;
+}
+
+.leaflet-popup-content {
+    margin: 0.1rem;
+}
+
+.leaflet-popup-content > div > ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.contextMenuItem {
+    background-color: white;
+    color: black;
+}
+
+.contextMenuItem:hover {
+    background-color: black;
+    color: white
+}
+
+
+.tooltipContainer {
+
+}
+
+.tooltipField {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.tooltipImage {
+    width: 128px;
+    height: 128px;
+}
