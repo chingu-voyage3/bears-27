@@ -43,7 +43,7 @@ router.get('/details/:id', function (req, res){
     let placeID = req.params.id
     console.log(placeID)
     TripEvent.findOrCreate('yelp', placeID , Date(), function(error, result){
-        console.log(result + ".")
+        console.log(result + ".") 
         res.send("error" + error + "result" + result)
     })
 
