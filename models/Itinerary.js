@@ -12,9 +12,20 @@ var itinerarySchema = new Schema({
     }]
 });
 
+itinerarySchema.statics.addEvent = (time,userId, itID, eventID, callback) => {
+    //TODO: Verify that this is a valid action
+    Itinerary.findOne({"_id" : itID})
+    .then(result => {
+        result.events.push({time: time, eventData: eventID})
+        console.log(result);
+        result.save();
+        callback(null, result)
+    })
+}
+
 itinerarySchema.statics.createNew = (date, isPublic , owner , callback) => {
     let newObj = {
-        date : Date(date),
+        date : date,
         public: isPublic, 
         owner: owner, 
     }

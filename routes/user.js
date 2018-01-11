@@ -27,11 +27,25 @@ router.get('/', function(req, res){
     }
 })
 
+
+router.get('/myPlannedEvents', function(req, res){
+    if(req.isAuthenticated()){
+        User.findOne({"_id" : req.user._id})
+        .then((result) => {
+            res.json(result.plannedEvents)
+        })
+    }
+    else {
+        res.send("You need to be logged in to view this page")
+    }
+})
+
 router.get('/addPlannedEvent/:id', function(req, res){
-    if(!req.user){
+    if(!req.isAuthenticated()){
         res.send("You must be logged in to complete this action")
     }
-    else{
+    else
+    {
     let eventID = req.params.id;
     User.addPlannedEvent(req.user.googleID , eventID, function(error, result){
         if(!error && result){

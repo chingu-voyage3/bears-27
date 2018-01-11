@@ -6,7 +6,6 @@ const YELP_API_KEY = process.env.YELP_API_KEY
 const yelp = require('yelp-fusion');
 const client = yelp.client(YELP_API_KEY);
 
-let axios = require('axios');
 
 let TripEventSchema = new Schema({
 
