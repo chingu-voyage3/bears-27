@@ -17,7 +17,6 @@ itinerarySchema.statics.addEvent = (time,userId, itID, eventID, callback) => {
     Itinerary.findOne({"_id" : itID})
     .then(result => {
         result.events.push({time: time, eventData: eventID})
-        console.log(result);
         result.save();
         callback(null, result)
     })

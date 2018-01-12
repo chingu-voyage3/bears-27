@@ -41,12 +41,28 @@ router.get('/near/:zipcode', function (req, res) {
 router.get('/details/:id', function (req, res){
     //Find the event with the provided yelp ID
     let placeID = req.params.id
-    console.log(placeID)
-    TripEvent.findOrCreate('yelp', placeID , Date(), function(error, result){
-        console.log(result + ".") 
-        res.send("error" + error + "result" + result)
-    })
+    TripEvent.find({"locationID": placeID}).then(
+        (results) => {
+            if(results.length == 0){
+                {res.send("None yet")}
+            }
+            else {res.send(results)}
+        })
+})
 
+router.get('/createEvent/:id/:dateString', function(req, res){
+    // Creates a new event, or if that place already has an event that day return that one. 
+    // TODO: Indicate that the event was already happening.
+    let placeID = req.params.id    
+    let date = Date.parse(String(req.params.dateString))
+    TripEvent.findOrCreate('yelp', placeID , date, function(error, result){
+        if(error){
+            res.send(error)
+        }
+        else {
+        res.send(result)
+        }
+    })
 })
 
   module.exports = router;

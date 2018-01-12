@@ -20,7 +20,20 @@ let TripEventSchema = new Schema({
 });
 
 TripEventSchema.statics.findOrCreate = (eventSource, placeID , date, callback) => {
-    TripEvent.find({"locationID": placeID})
+    date = new Date(date); //The date is a number/string coming in.
+    let startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    //If you add more than the number of days that would make it a new month this still works
+    let endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
+    console.log(startDate + " " + endDate)
+    console.log(date)
+    TripEvent.find(
+        {
+            "locationID": placeID, 
+            "EventDate": {
+                $gte: startDate,
+                $lt: endDate
+            }
+        })
     .then((result) => {
         console.log(result)
         if(result.length === 0){
