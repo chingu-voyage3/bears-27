@@ -6,7 +6,7 @@ import 'bulma/css/bulma.css';
 import './Map.css';
 
 
-var markerIcon = L.icon({
+const markerIcon = L.icon({
     iconUrl: './images/map-markers/marker-icon.png',
     shadowUrl: './images/map-markers/marker-shadow.png',
 
@@ -17,7 +17,7 @@ var markerIcon = L.icon({
     shadowSize:  [41, 41]
 });
 
-var markerSecIcon = L.icon({
+const markerSecIcon = L.icon({
     iconUrl: './images/map-markers/marker-sec-icon.png',
     shadowUrl: './images/map-markers/marker-sec-shadow.png',
 
@@ -28,13 +28,71 @@ var markerSecIcon = L.icon({
     shadowSize:  [41, 41]
 });
 
+const MyCustomMarker = L.Marker.extend({
+    bindPopup: function(htmlContent, options) {
+
+        if (options && options.showOnMouseOver) {    
+            // call the super method
+            L.Marker.prototype.bindPopup.apply(this, [htmlContent, options]);
+            // unbind the click event
+            this.off("click", this.openPopup, this);
+            // bind to mouse over
+            this.on("mouseover", function(e) {
+                // get the element that the mouse hovered onto
+                var target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
+                var parent = this._getParent(target, "leaflet-popup");
+
+                // check to see if the element is a popup, and if it is this marker's popup
+                if (parent == this._popup._container) return true;
+                // show the popup
+                this.openPopup();
+            }, this);
+            
+            // and mouse out
+            this.on("mouseout", function(e) {
+                // get the element that the mouse hovered onto
+                var target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
+                // check to see if the element is a popup
+                if (this._getParent(target, "leaflet-popup")) {
+                    L.DomEvent.on(this._popup._container, "mouseout", this._popupMouseOut, this);
+                    return true;
+                }
+                // hide the popup
+                this.closePopup();
+            }, this);
+        }
+    },
+
+    _popupMouseOut: function(e) {
+        // detach the event
+        L.DomEvent.off(this._popup, "mouseout", this._popupMouseOut, this);
+        // get the element that the mouse hovered onto
+        var target = e.toElement || e.relatedTarget;
+        // check to see if the element is a popup
+        if (this._getParent(target, "leaflet-popup")) return true;
+        // check to see if the marker was hovered back onto
+        if (target == this._icon) return true;
+        // hide the popup
+        this.closePopup();
+    },
+    
+    _getParent: function(element, className) {
+        var parent = element.parentNode;
+        while (parent != null) {
+            if (parent.className && L.DomUtil.hasClass(parent, className))
+                return parent;
+            parent = parent.parentNode;   
+        }
+        return false;
+    }
+});
+
 
 
 export default class MapContainer extends Component {
 
     render() {
         const { locs, locHelpers, suggestions } = this.props;
-        console.log(suggestions);
         /* if (!locs.length) return <div>Error loading map. No initial location.</div> */
         return <Map locs={locs} locHelpers={locHelpers} suggestions={suggestions} />
     }
@@ -122,6 +180,7 @@ class Map extends Component {
         suggestionsMarkers.forEach( (suggestionMarker) => map.removeLayer(suggestionMarker) );
         const suggsMarkers = suggestions.map( (suggestion) => {
             const { coordinates: coords } = suggestion;
+            /* const marker =  new MyCustomMarker([coords.latitude, coords.longitude], {icon: markerIcon}); */
             const marker = L.marker([coords.latitude, coords.longitude], {icon: markerIcon});
             marker.bindPopup(`
             <div class="card">
@@ -145,16 +204,27 @@ class Map extends Component {
                         <br>
                         Rating: ${suggestion.rating}/5
                     </div>
+                    
+                    <div>
+                        <button class="button is-link" onclick="console.log('asdasd')">Add</button>
+                    </div>
                 </div>
             </div>
                     
-            `);
+            `, {
+                showOnMouseOver: true
+            });
             marker.on('mouseover', function (e) {
                 this.openPopup();
             });
             marker.on('mouseout', function (e) {
                 this.closePopup();
             });
+            marker.on('click', function(e) {
+                this.openPopup();
+                this.off('mouseover');
+                this.off('mouseout');
+            })
             return marker;
         });
         suggsMarkers.forEach( (suggMarker) => suggMarker.addTo(map) );
