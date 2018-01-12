@@ -40,7 +40,7 @@ router.get('/test1', function (req, res){
     })
 })
 router.get('/test4', function(req, res){
-    let googleID = req.user.googleID;
+    let userID = req.user._id;
     TripEvent.addConfirmedAttending(googleID,"5a49143a230acb1ec4c72949", function(err, result){
         if(err){
             console.log(err);
@@ -49,14 +49,14 @@ router.get('/test4', function(req, res){
             console.log("All good");
         }
     })
-    User.findOne({"googleID": googleID})
+    User.findOne({"_id": userID})
     .exec()
     .then((result) => {
         res.json(result);
     })
 })
 router.get('/test3', function(req, res){
-    User.addPlannedEvent(req.user.googleID,
+    User.addPossibleEvent(req.user._id,
          "5a49143a230acb1ec4c72949", function(err, result){
              if(err){
                  res.send(err);

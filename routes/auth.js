@@ -14,7 +14,7 @@ passport.use(new GoogleStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     console.log("MONGO::: " + mongoose.connection.readyState);    
-       User.findOrCreate(profile.id, profile.name.familyName, profile.name.givenName, 
+       User.findOrCreate(null, profile.id, profile.name.familyName, profile.name.givenName, 
         function (err, user) {
             return done(err, user);
        });
