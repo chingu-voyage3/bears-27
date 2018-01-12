@@ -124,17 +124,30 @@ class Map extends Component {
             const { coordinates: coords } = suggestion;
             const marker = L.marker([coords.latitude, coords.longitude], {icon: markerIcon});
             marker.bindPopup(`
-                <div class="tooltipContainer">
-                    <figure class="image is-128x128">
-                        <img class="tooltipImage" src=${suggestion.image_url} />
+            <div class="card">
+                <div class="card-image">
+                    <figure class="image is-3by2">
+                        <img src=${suggestion.image_url} alt="Placeholder image" />
                     </figure>
-                    <div class="tooltipField tooltipName">${suggestion.name}</div>
-                    <div class="tooltipField tooltipPhone">${suggestion.phone}</div>
-                    ${suggestion.location.display_address.map( (addr) => 
-                        `<div class="tooltipField tooltipAddress">${addr}</div>`
-                    ).join("")}
-                    <div class="tooltipField tooltipRating">${suggestion.rating}/5</div>
                 </div>
+                <div class="card-content">
+                    <div class="media">
+                        <div class="media-content">
+                            <p class="title is-4">${suggestion.name}</p>
+                            <p class="subtitle is-6">${suggestion.phone}</p>
+                        </div>
+                    </div>
+                
+                    <div class="content">
+                        ${suggestion.location.display_address.map( (addr) => 
+                            `<div>${addr}</div>`
+                        ).join("")}
+                        <br>
+                        Rating: ${suggestion.rating}/5
+                    </div>
+                </div>
+            </div>
+                    
             `);
             marker.on('mouseover', function (e) {
                 this.openPopup();
@@ -159,7 +172,7 @@ class Map extends Component {
     createMap() {
         const { locs, locHelpers } = this.props;
         const map = L.map('mapid').setView( locs[0] || [-31.405633, -64.191981], 12);
-        L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}', {
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 17
         }).addTo(map);
         const markerLayers = locs.map( (loc) => L.marker(loc, {icon: markerIcon}) );

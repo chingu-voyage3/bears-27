@@ -62,17 +62,6 @@
 }
 
 
-.tooltipContainer {
-
-}
-
-.tooltipField {
-    content: "";
-    clear: both;
-    display: table;
-}
-
 .tooltipImage {
-    width: 128px;
-    height: 128px;
+    max-height: 128px;
 }
