@@ -17,13 +17,15 @@ router.get('/profile', function(req, res){
   if(!req.user){
     res.redirect('/login')
   }
-  let googleID = String(req.user.googleID);
+  let userID = String(req.user._id);
   User.findOne({
-    googleID: googleID
-  }).then(
-    (result) => {
+    _id: userID
+  }).then((result) => {
       res.json(result)
-    }
-  )
+    })
+    .catch((error) => {
+      res.send(String(error));
+    })
+
 })
 module.exports = router;

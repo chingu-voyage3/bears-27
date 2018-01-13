@@ -36,6 +36,8 @@ app.use(require('express-session')({ secret: 'random string', resave: true, save
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
 //CORS
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -55,10 +57,11 @@ let users = require('./routes/user')
 app.use('/users', users)
 let itineraries = require('./routes/itineraries')
 app.use('/itineraries', itineraries)
+let places = require('./routes/places')
+app.use('/json/places', places)
 
-//TODO: Remove this
-let test = require('./routes/test');
-app.use('/test', test);
+let test = require('./routes/test')
+app.use('/test', test)
 
 
 // // catch 404 and forward to error handler

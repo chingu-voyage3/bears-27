@@ -1,3 +1,5 @@
+// import { Error } from 'mongoose';
+
 //NOTE: The user object that is in the request parameter does not update after login.
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
@@ -21,10 +23,10 @@ var userSchema = new Schema({
   created_at: Date,
   updated_at: Date
 });
-userSchema.statics.addPossibleEvent = function(googleID, eventID, callback) {
+userSchema.statics.addPossibleEvent = function(userID, eventID, callback) {
   console.log("MONGO STATE::: " + mongoose.connection.readyState);
   
-  this.findOne({"googleID": googleID})
+  this.findOne({"_id": userID})
   .exec()
   .then((user) => {
     TripEventSchema.findOne({"_id": eventID})
@@ -50,17 +52,13 @@ userSchema.statics.addPossibleEvent = function(googleID, eventID, callback) {
     callback(error, null);
   })
 }
-userSchema.statics.addPlannedEvent = function(googleID, eventID, callback) {
+userSchema.statics.addPlannedEvent = function(userID, eventID, callback) {
   console.log("MONGO STATE::: " + mongoose.connection.readyState);
   
-  this.findOne({"googleID": googleID})
+  this.findOne({"_id": userID})
   .exec()
   .then((user) => {
     TripEventSchema.findOne({"_id": eventID})
-    .then(
-      (result) => {
-        return result;
-      })
     .then((result) => {
       user.plannedEvents.push(result._id);
       user.save()
@@ -80,35 +78,58 @@ userSchema.statics.addPlannedEvent = function(googleID, eventID, callback) {
     callback(error, null);
   })
 }
-userSchema.statics.findOrCreate = function(googleID, lastName, firstName, callback){
-  console.log("MONGO STATE::: " + mongoose.connection.readyState);
-  //TODO: Determine if I actually need all of these catch statements. 
-  this.findOne(
-    {"googleID": googleID},
-    function(err, user){
-      if (err){
-        return callback(err, null)
-      }
-      else if (!user){
-        //TODO: Make users with more than just ID's and names
-        newUser = {
-          googleID: googleID, 
-          name: firstName + " " + lastName, 
-        }
-        User.create(newUser, function(err, user){
-          if(err){
-            return callback(err, null);
-          }
-          else{
-            return callback(null, user);
-          }
-        })
-      }
-      else{
-        return callback(null, user);
-    }
+userSchema.statics.createUser = function(googleID, lastName, firstName, callback) {
+  User.create({
+    googleID: googleID,
+    name: firstName + " " + lastName
+  }).then( (result) => {
+    callback(null, result)
+  })
+  .catch((err) => {
+    console.log(err);
+    callback(err, null);
   })
 }
+userSchema.statics.findOrCreate = function(userID, googleID, lastName, firstName, callback){
+  this.findOne({
+    _id: userID
+  })
+  .exec()
+  .then((user) => {
+    if(user){
+      callback(null, user)
+    }
+    else {
+      console.log("Creating a new user");
+      User.createUser(googleID, lastName, firstName, callback)
+    }
+  })
+  .catch((error) => {
+    console.log("findOrCreate" + error);
+    callback(error, null)
+  })
+}
+userSchema.statics.findOrCreate = function(userID, googleID, lastName, firstName, callback){
+  this.findOne({
+    googleID: googleID
+  })
+  .exec()
+  .then((user) => {
+
+    if(user){
+      callback(null, user)
+    }
+    else {
+      console.log("Creating a new user");
+      User.createUser(googleID, lastName, firstName, callback)
+    }
+  })
+  .catch((error) => {
+    console.log("findOrCreate" + error);
+    callback(error, null)
+  })
+}
+
 
 var User = mongoose.model('User', userSchema);
 
