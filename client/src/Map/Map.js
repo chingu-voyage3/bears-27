@@ -6,7 +6,7 @@ import 'bulma/css/bulma.css';
 import './Map.css';
 
 
-var markerIcon = L.icon({
+const markerIcon = L.icon({
     iconUrl: './images/map-markers/marker-icon.png',
     shadowUrl: './images/map-markers/marker-shadow.png',
 
@@ -17,7 +17,7 @@ var markerIcon = L.icon({
     shadowSize:  [41, 41]
 });
 
-var markerSecIcon = L.icon({
+const markerSecIcon = L.icon({
     iconUrl: './images/map-markers/marker-sec-icon.png',
     shadowUrl: './images/map-markers/marker-sec-shadow.png',
 
@@ -29,14 +29,53 @@ var markerSecIcon = L.icon({
 });
 
 
+function createPopupContent( suggestion, handlers ) {
+    const card = L.DomUtil.create('div', 'card');
+    const cardImage = L.DomUtil.create('div', 'card-image', card );
+    const figure = L.DomUtil.create('figure', 'image is-3by2', cardImage );
+    const img = L.DomUtil.create('img', '', figure );
+    img.src = suggestion.image_url;
+    img.alt = 'Placeholder text';
+
+    const cardContent = L.DomUtil.create('div', 'card-content', card );
+    const media = L.DomUtil.create('div', 'media', cardContent );
+    const mediaContent = L.DomUtil.create('div', 'media-content', media);
+    const title = L.DomUtil.create('p', 'title is-4', mediaContent );
+    title.innerHTML = suggestion.name;
+    const subtitle = L.DomUtil.create('p', 'subtitle is-6', mediaContent );
+    subtitle.innerHTML = suggestion.phone;
+
+    const content = L.DomUtil.create('div', 'content', cardContent );
+    suggestion.location.display_address.forEach( (addr) => {
+        const addrContainer = L.DomUtil.create('div', '', content )
+        addrContainer.innerHTML = addr;
+    });
+    L.DomUtil.create('br', '', content );
+    const rating = L.DomUtil.create('p', '', content );
+    rating.innerHTML = `Rating: ${suggestion.rating}/5`;
+
+    const buttonContainer = L.DomUtil.create('div', 'button-container', cardContent );
+    var addButton = L.DomUtil.create('button', 'button is-link', buttonContainer);
+    addButton.setAttribute('type', 'button');
+    addButton.innerHTML = 'Details & Add';
+
+    if( handlers.onClick ) L.DomEvent.on(addButton, 'click', handlers.onClick );
+
+    return card;
+}
+
 
 export default class MapContainer extends Component {
 
     render() {
-        const { locs, locHelpers, suggestions } = this.props;
-        console.log(suggestions);
+        const { locs, locHelpers, suggestions, setActiveSuggestion } = this.props;
         /* if (!locs.length) return <div>Error loading map. No initial location.</div> */
-        return <Map locs={locs} locHelpers={locHelpers} suggestions={suggestions} />
+        return <Map 
+        locs={locs} 
+        locHelpers={locHelpers} 
+        suggestions={suggestions} 
+        setActiveSuggestion={setActiveSuggestion}
+        />
     }
 }
 
@@ -65,7 +104,7 @@ class Map extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { map, markerLayers, floatingMarker, suggestionsMarkers } = this.state;
-        const { suggestions } = nextProps;
+        const { suggestions, setActiveSuggestion } = nextProps;
         if (!map) return;
 
         const { locs: newLocs, floatingLoc } = nextProps;
@@ -123,24 +162,25 @@ class Map extends Component {
         const suggsMarkers = suggestions.map( (suggestion) => {
             const { coordinates: coords } = suggestion;
             const marker = L.marker([coords.latitude, coords.longitude], {icon: markerIcon});
-            marker.bindPopup(`
-                <div class="tooltipContainer">
-                    <figure class="image is-128x128">
-                        <img class="tooltipImage" src=${suggestion.image_url} />
-                    </figure>
-                    <div class="tooltipField tooltipName">${suggestion.name}</div>
-                    <div class="tooltipField tooltipPhone">${suggestion.phone}</div>
-                    ${suggestion.location.display_address.map( (addr) => 
-                        `<div class="tooltipField tooltipAddress">${addr}</div>`
-                    ).join("")}
-                    <div class="tooltipField tooltipRating">${suggestion.rating}/5</div>
-                </div>
-            `);
+            
+            const popUp = L.popup();
+            popUp.setContent( createPopupContent(suggestion, {
+                onClick: () => {
+                    setActiveSuggestion(suggestion);
+                }
+            }) );
+
+            marker.bindPopup(popUp);
             marker.on('mouseover', function (e) {
                 this.openPopup();
             });
             marker.on('mouseout', function (e) {
                 this.closePopup();
+            });
+            marker.on('click', function(e) {
+                this.openPopup();
+                this.off('mouseover');
+                this.off('mouseout');
             });
             return marker;
         });
@@ -159,7 +199,7 @@ class Map extends Component {
     createMap() {
         const { locs, locHelpers } = this.props;
         const map = L.map('mapid').setView( locs[0] || [-31.405633, -64.191981], 12);
-        L.tileLayer('https://korona.geog.uni-heidelberg.de/tiles/roads/x={x}&y={y}&z={z}', {
+        L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 17
         }).addTo(map);
         const markerLayers = locs.map( (loc) => L.marker(loc, {icon: markerIcon}) );
