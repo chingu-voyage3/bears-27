@@ -13,9 +13,8 @@ html, body {
 .App > div {
     height: 100%;
 }
+
 /* 
 #contentContainer {
-    float: left;
-    position: relative;
-    left: 50%;
+    display: flex;
 } */

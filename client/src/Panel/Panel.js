@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import './Panel.css';
 
 export default class Panel extends Component {
 
     render() {
-        const { removeLocFactory, setSuggestions } = this.props;
+        const { removeLocFactory } = this.props;
         return (
             <div id="panelContainer">
                 <div className="column is-12">

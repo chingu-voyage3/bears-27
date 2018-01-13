@@ -4,7 +4,7 @@
     left: 33%; 
     width: 33%;
     margin-top: 2rem !important;
-    z-index: 99;
+    z-index: 10;
 }
 
 #searchInput {

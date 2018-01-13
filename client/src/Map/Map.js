@@ -28,73 +28,54 @@ const markerSecIcon = L.icon({
     shadowSize:  [41, 41]
 });
 
-const MyCustomMarker = L.Marker.extend({
-    bindPopup: function(htmlContent, options) {
 
-        if (options && options.showOnMouseOver) {    
-            // call the super method
-            L.Marker.prototype.bindPopup.apply(this, [htmlContent, options]);
-            // unbind the click event
-            this.off("click", this.openPopup, this);
-            // bind to mouse over
-            this.on("mouseover", function(e) {
-                // get the element that the mouse hovered onto
-                var target = e.originalEvent.fromElement || e.originalEvent.relatedTarget;
-                var parent = this._getParent(target, "leaflet-popup");
+function createPopupContent( suggestion, handlers ) {
+    const card = L.DomUtil.create('div', 'card');
+    const cardImage = L.DomUtil.create('div', 'card-image', card );
+    const figure = L.DomUtil.create('figure', 'image is-3by2', cardImage );
+    const img = L.DomUtil.create('img', '', figure );
+    img.src = suggestion.image_url;
+    img.alt = 'Placeholder text';
 
-                // check to see if the element is a popup, and if it is this marker's popup
-                if (parent == this._popup._container) return true;
-                // show the popup
-                this.openPopup();
-            }, this);
-            
-            // and mouse out
-            this.on("mouseout", function(e) {
-                // get the element that the mouse hovered onto
-                var target = e.originalEvent.toElement || e.originalEvent.relatedTarget;
-                // check to see if the element is a popup
-                if (this._getParent(target, "leaflet-popup")) {
-                    L.DomEvent.on(this._popup._container, "mouseout", this._popupMouseOut, this);
-                    return true;
-                }
-                // hide the popup
-                this.closePopup();
-            }, this);
-        }
-    },
+    const cardContent = L.DomUtil.create('div', 'card-content', card );
+    const media = L.DomUtil.create('div', 'media', cardContent );
+    const mediaContent = L.DomUtil.create('div', 'media-content', media);
+    const title = L.DomUtil.create('p', 'title is-4', mediaContent );
+    title.innerHTML = suggestion.name;
+    const subtitle = L.DomUtil.create('p', 'subtitle is-6', mediaContent );
+    subtitle.innerHTML = suggestion.phone;
 
-    _popupMouseOut: function(e) {
-        // detach the event
-        L.DomEvent.off(this._popup, "mouseout", this._popupMouseOut, this);
-        // get the element that the mouse hovered onto
-        var target = e.toElement || e.relatedTarget;
-        // check to see if the element is a popup
-        if (this._getParent(target, "leaflet-popup")) return true;
-        // check to see if the marker was hovered back onto
-        if (target == this._icon) return true;
-        // hide the popup
-        this.closePopup();
-    },
-    
-    _getParent: function(element, className) {
-        var parent = element.parentNode;
-        while (parent != null) {
-            if (parent.className && L.DomUtil.hasClass(parent, className))
-                return parent;
-            parent = parent.parentNode;   
-        }
-        return false;
-    }
-});
+    const content = L.DomUtil.create('div', 'content', cardContent );
+    suggestion.location.display_address.forEach( (addr) => {
+        const addrContainer = L.DomUtil.create('div', '', content )
+        addrContainer.innerHTML = addr;
+    });
+    L.DomUtil.create('br', '', content );
+    const rating = L.DomUtil.create('p', '', content );
+    rating.innerHTML = `Rating: ${suggestion.rating}/5`;
 
+    const buttonContainer = L.DomUtil.create('div', 'button-container', cardContent );
+    var addButton = L.DomUtil.create('button', 'button is-link', buttonContainer);
+    addButton.setAttribute('type', 'button');
+    addButton.innerHTML = 'Details & Add';
+
+    if( handlers.onClick ) L.DomEvent.on(addButton, 'click', handlers.onClick );
+
+    return card;
+}
 
 
 export default class MapContainer extends Component {
 
     render() {
-        const { locs, locHelpers, suggestions } = this.props;
+        const { locs, locHelpers, suggestions, setActiveSuggestion } = this.props;
         /* if (!locs.length) return <div>Error loading map. No initial location.</div> */
-        return <Map locs={locs} locHelpers={locHelpers} suggestions={suggestions} />
+        return <Map 
+        locs={locs} 
+        locHelpers={locHelpers} 
+        suggestions={suggestions} 
+        setActiveSuggestion={setActiveSuggestion}
+        />
     }
 }
 
@@ -123,7 +104,7 @@ class Map extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { map, markerLayers, floatingMarker, suggestionsMarkers } = this.state;
-        const { suggestions } = nextProps;
+        const { suggestions, setActiveSuggestion } = nextProps;
         if (!map) return;
 
         const { locs: newLocs, floatingLoc } = nextProps;
@@ -180,40 +161,16 @@ class Map extends Component {
         suggestionsMarkers.forEach( (suggestionMarker) => map.removeLayer(suggestionMarker) );
         const suggsMarkers = suggestions.map( (suggestion) => {
             const { coordinates: coords } = suggestion;
-            /* const marker =  new MyCustomMarker([coords.latitude, coords.longitude], {icon: markerIcon}); */
             const marker = L.marker([coords.latitude, coords.longitude], {icon: markerIcon});
-            marker.bindPopup(`
-            <div class="card">
-                <div class="card-image">
-                    <figure class="image is-3by2">
-                        <img src=${suggestion.image_url} alt="Placeholder image" />
-                    </figure>
-                </div>
-                <div class="card-content">
-                    <div class="media">
-                        <div class="media-content">
-                            <p class="title is-4">${suggestion.name}</p>
-                            <p class="subtitle is-6">${suggestion.phone}</p>
-                        </div>
-                    </div>
-                
-                    <div class="content">
-                        ${suggestion.location.display_address.map( (addr) => 
-                            `<div>${addr}</div>`
-                        ).join("")}
-                        <br>
-                        Rating: ${suggestion.rating}/5
-                    </div>
-                    
-                    <div>
-                        <button class="button is-link" onclick="console.log('asdasd')">Add</button>
-                    </div>
-                </div>
-            </div>
-                    
-            `, {
-                showOnMouseOver: true
-            });
+            
+            const popUp = L.popup();
+            popUp.setContent( createPopupContent(suggestion, {
+                onClick: () => {
+                    setActiveSuggestion(suggestion);
+                }
+            }) );
+
+            marker.bindPopup(popUp);
             marker.on('mouseover', function (e) {
                 this.openPopup();
             });
@@ -224,7 +181,7 @@ class Map extends Component {
                 this.openPopup();
                 this.off('mouseover');
                 this.off('mouseout');
-            })
+            });
             return marker;
         });
         suggsMarkers.forEach( (suggMarker) => suggMarker.addTo(map) );

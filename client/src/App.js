@@ -5,6 +5,7 @@ import 'font-awesome/css/font-awesome.min.css';
 import Map from './Map/Map';
 import MapPopup from './Map/MapPopup';
 import SearchInput from './SearchInput/SearchInput';
+import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
 import './App.css';
 import TripCard from './components/TripCard'
@@ -22,6 +23,7 @@ class AppContainer extends Component {
       locs: [],
       floatingLoc: undefined,
       suggestions: [],
+      activeSuggestion: undefined,
     }
   }
 
@@ -82,8 +84,14 @@ class AppContainer extends Component {
     })
   }
 
+  setActiveSuggestion(suggestion) {
+    this.setState({
+      activeSuggestion: suggestion
+    })
+  }
+
   render() {
-    const { locs, floatingLoc, suggestions } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion } = this.state;
     return (
       <App  
       locs={locs}
@@ -91,6 +99,8 @@ class AppContainer extends Component {
       removeLocFactory={this.removeLocFactory.bind(this)}
       setSuggestions={this.setSuggestions.bind(this)}
       suggestions={suggestions}
+      setActiveSuggestion={this.setActiveSuggestion.bind(this)}
+      activeSuggestion={activeSuggestion}
       locHelpers={{
         add: this.addLoc.bind(this),
         remove: this.removeLoc.bind(this),
@@ -106,7 +116,11 @@ class AppContainer extends Component {
 
 class App extends Component {
   render() {
-    const { locs, locHelpers, floatingLoc, removeLocFactory, setSuggestions, suggestions } = this.props;
+    const { 
+      locs, locHelpers, floatingLoc, 
+      setSuggestions, suggestions, 
+      setActiveSuggestion,activeSuggestion 
+    } = this.props;
     return (
       <div className="App">
         <div className="columns is-gapless">
@@ -118,9 +132,19 @@ class App extends Component {
             setSuggestions={setSuggestions}
             />
           </div> */}
-          <div id="contentContainer" className="column is-12">
+          <div className="column is-12" id="contentContainer">
+            <EventCard 
+            suggestion={activeSuggestion} 
+            setActiveSuggestion={setActiveSuggestion}
+            />
             <SearchInput setSuggestions={setSuggestions}/>
-            <Map locs={locs} locHelpers={locHelpers} floatingLoc={floatingLoc} suggestions={suggestions}/>
+            <Map 
+            locs={locs} 
+            locHelpers={locHelpers} 
+            floatingLoc={floatingLoc} 
+            suggestions={suggestions}
+            setActiveSuggestion={setActiveSuggestion}
+            />
             <MapPopup loc={floatingLoc} locHelpers={locHelpers} />
           </div>
         </div>

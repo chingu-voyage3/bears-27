@@ -1,0 +1,20 @@
+
+.modal-content {
+    overflow:hidden;
+}
+
+#eventCardContainer {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #AAA;
+
+    overflow:hidden;
+}
+
+#eventCardContainer > .card{
+    box-shadow: none;
+    overflow:hidden;
+}
