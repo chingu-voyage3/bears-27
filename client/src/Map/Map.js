@@ -33,16 +33,16 @@ function createPopupContent( suggestion, handlers ) {
     const card = L.DomUtil.create('div', 'card');
     const cardImage = L.DomUtil.create('div', 'card-image', card );
     const figure = L.DomUtil.create('figure', 'image is-3by2', cardImage );
-    const img = L.DomUtil.create('img', '', figure );
+    const img = L.DomUtil.create('img', 'popupImage', figure );
     img.src = suggestion.image_url;
     img.alt = 'Placeholder text';
 
     const cardContent = L.DomUtil.create('div', 'card-content', card );
     const media = L.DomUtil.create('div', 'media', cardContent );
     const mediaContent = L.DomUtil.create('div', 'media-content', media);
-    const title = L.DomUtil.create('p', 'title is-4', mediaContent );
+    const title = L.DomUtil.create('div', 'title is-4', mediaContent );
     title.innerHTML = suggestion.name;
-    const subtitle = L.DomUtil.create('p', 'subtitle is-6', mediaContent );
+    const subtitle = L.DomUtil.create('div', 'subtitle is-6', mediaContent );
     subtitle.innerHTML = suggestion.phone;
 
     const content = L.DomUtil.create('div', 'content', cardContent );
@@ -51,10 +51,10 @@ function createPopupContent( suggestion, handlers ) {
         addrContainer.innerHTML = addr;
     });
     L.DomUtil.create('br', '', content );
-    const rating = L.DomUtil.create('p', '', content );
+    const rating = L.DomUtil.create('div', '', content );
     rating.innerHTML = `Rating: ${suggestion.rating}/5`;
 
-    const buttonContainer = L.DomUtil.create('div', 'button-container', cardContent );
+    const buttonContainer = L.DomUtil.create('div', 'button-container has-text-centered', cardContent );
     var addButton = L.DomUtil.create('button', 'button is-link', buttonContainer);
     addButton.setAttribute('type', 'button');
     addButton.innerHTML = 'Details & Add';
@@ -163,7 +163,9 @@ class Map extends Component {
             const { coordinates: coords } = suggestion;
             const marker = L.marker([coords.latitude, coords.longitude], {icon: markerIcon});
             
-            const popUp = L.popup();
+            const popUp = L.popup({
+                autoPan: false
+            });
             popUp.setContent( createPopupContent(suggestion, {
                 onClick: () => {
                     setActiveSuggestion(suggestion);
@@ -178,10 +180,20 @@ class Map extends Component {
                 this.closePopup();
             });
             marker.on('click', function(e) {
-                this.openPopup();
                 this.off('mouseover');
                 this.off('mouseout');
+                this.openPopup();
             });
+            marker.on('popupclose', function(e) {
+                this.off('mouseover');
+                this.off('mouseout');
+                marker.on('mouseover', function (e) {
+                    this.openPopup();
+                });
+                marker.on('mouseout', function (e) {
+                    this.closePopup();
+                });
+            })
             return marker;
         });
         suggsMarkers.forEach( (suggMarker) => suggMarker.addTo(map) );
@@ -225,8 +237,9 @@ class Map extends Component {
         });
 
         L.easyButton('<span class="star">&starf;</span>', (btn, map) => {
-            const { markerLayers } = this.state;
-            const group = new L.featureGroup(markerLayers);
+            const { suggestionsMarkers } = this.state;
+            if( !suggestionsMarkers.length ) return;
+            const group = new L.featureGroup(suggestionsMarkers);
             map.fitBounds(group.getBounds().pad(0.1));
         }).addTo( map );
 
