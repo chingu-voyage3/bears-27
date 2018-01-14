@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import './SearchInput.css';
 
@@ -33,7 +32,7 @@ export default class SearchInput extends Component {
     }
 
     render() {
-        const { suggestions, input } = this.state;
+        const { input } = this.state;
         const { isSearching } = this.props;
         return (
             <div id="searchInputContainer">
