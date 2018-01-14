@@ -24,6 +24,7 @@ class AppContainer extends Component {
       floatingLoc: undefined,
       suggestions: [],
       activeSuggestion: undefined,
+      isSearching: false,
     }
   }
 
@@ -90,8 +91,26 @@ class AppContainer extends Component {
     })
   }
 
+  handleInputSearch(input) {
+    this.setState({isSearching: true});
+    axios.get(`/food/json/near/${input}`)
+    .then( (results) => {
+        if( !results.data.jsonBody.businesses) throw Error("businesses field doesn't exists. Wrong response.");
+        this.setState({ isSearching: false });
+        this.setSuggestions(results.data.jsonBody.businesses);
+    })
+    .catch( (e) => {
+        this.setState({ isSearching: false });
+        console.log("ERROR!", e);
+    })
+  }
+
+  handleMapSearch(loc) {
+
+  }
+
   render() {
-    const { locs, floatingLoc, suggestions, activeSuggestion } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching } = this.state;
     return (
       <App  
       locs={locs}
@@ -101,6 +120,8 @@ class AppContainer extends Component {
       suggestions={suggestions}
       setActiveSuggestion={this.setActiveSuggestion.bind(this)}
       activeSuggestion={activeSuggestion}
+      handleInputSearch={this.handleInputSearch.bind(this)}
+      isSearching={isSearching}
       locHelpers={{
         add: this.addLoc.bind(this),
         remove: this.removeLoc.bind(this),
@@ -118,8 +139,8 @@ class App extends Component {
   render() {
     const { 
       locs, locHelpers, floatingLoc, 
-      setSuggestions, suggestions, 
-      setActiveSuggestion,activeSuggestion 
+      suggestions, setActiveSuggestion, activeSuggestion,
+      handleInputSearch, isSearching
     } = this.props;
     return (
       <div className="App">
@@ -137,7 +158,7 @@ class App extends Component {
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
             />
-            <SearchInput setSuggestions={setSuggestions}/>
+            <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
             locs={locs} 
             locHelpers={locHelpers} 
@@ -145,7 +166,7 @@ class App extends Component {
             suggestions={suggestions}
             setActiveSuggestion={setActiveSuggestion}
             />
-            <MapPopup loc={floatingLoc} locHelpers={locHelpers} />
+            {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
           </div>
         </div>
       </div>
@@ -153,21 +174,6 @@ class App extends Component {
   }
 }
 
-/* axios.get('https://ipinfo.io', {
-  params: {
-    token: KEY_IP_LOC
-  }
-})
-.then( (res) => {
-  var { locs } = this.state;      
-  const initLoc = res.data.loc.split(",").map(Number);
-  this.setState({
-    locs: [ initLoc, ...locs ]
-  });
-})
-.catch( (err) => {
-  console.log(err);
-}) */
 
 function getCurrentPositionIP() {
   return axios.get('https://ipinfo.io', {
