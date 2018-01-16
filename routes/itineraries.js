@@ -41,6 +41,7 @@ router.get("/delete/:id", function(req, res){
 })
 
 router.get('/addEvent/:itineraryID/:eventID', function(req, res){
+    //TODO: Fix this
     let tripID = req.params.eventID;
     let itID = req.params.itineraryID;
     let userID = req.user._id;
@@ -53,11 +54,11 @@ router.get('/addEvent/:itineraryID/:eventID', function(req, res){
 })
 
 router.post('/new', function(req, res){
+    //TODO: Fix this
     let date = String(req.body["eventDate"]);
     let isPublic = Boolean(req.body["isPublic"]);
     let userID = req.user ? req.user._id: null;
     date = Date.parse(date)
-    userID = "5a55b9eb401cc54770b4052a"
     if(userID){
         Itinerary.createNew(date, isPublic, userID, function(err, result){
             console.log(err)
