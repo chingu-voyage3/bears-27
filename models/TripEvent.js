@@ -23,6 +23,7 @@ TripEventSchema.statics.findOrCreate = (eventSource, placeID , date, callback) =
     date = new Date(date); //The date is a number/string coming in.
     let startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     //If you add more than the number of days that would make it a new month this still works
+    //so we dont end up needing to deal with rolling over months,etc
     let endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1);
     console.log(startDate + " " + endDate)
     console.log(date)
