@@ -13,3 +13,8 @@ html, body {
 .App > div {
     height: 100%;
 }
+
+/* 
+#contentContainer {
+    display: flex;
+} */
