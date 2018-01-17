@@ -3,13 +3,37 @@ import './Panel.css';
 
 export default class Panel extends Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isRetracted: true
+        }
+    }
+
+    handleRetract() {
+        this.setState({ isRetracted: !this.state.isRetracted });
+    }
+
+
     render() {
-        const { removeLocFactory } = this.props;
+        const { itinerary } = this.props;
+        const { isRetracted } = this.state;
+        if(isRetracted) return (
+            <div id="panelTrigger">
+                <i class="fa fa-list fa-2x" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
+            </div>
+        )
         return (
             <div id="panelContainer">
-                <div className="column is-12">
-                    PANEL TITLE!
-                    <ListMarkers locs={this.props.locs} removeLocFactory={removeLocFactory}/>
+                <div className="columns">
+                    <div className="column is-12">
+                        <i className="fa fa-arrow-circle-o-right" 
+                        aria-hidden="true" 
+                        onClick={this.handleRetract.bind(this)}></i>
+                        Current itinerary
+                        <ListMarkers itinerary={itinerary} />
+                    </div>
                 </div>
             </div>
         )
@@ -19,16 +43,13 @@ export default class Panel extends Component {
 class ListMarkers extends Component {
 
     render() {
-        const locs = this.props.locs || ["default message for no locations"];
-        const { removeLocFactory } = this.props;
+        const itinerary = this.props.itinerary || ["default message for no itinerary"];
         return (
             <aside className="menu">            
                 <ul className="menu-list">
-                    { locs.map( (loc, i) => <MarkerItem 
+                    { itinerary.map( (event, i) => <MarkerItem 
                     key={`marker${i}`} 
-                    index={`marker${i}`}
-                    loc={loc} 
-                    removeLoc={removeLocFactory(i)}
+                    event={event}
                     />)}
                 </ul>
             </aside>
@@ -40,7 +61,7 @@ class ListMarkers extends Component {
 class MarkerItem extends Component {
 
     render() {
-        const { loc, removeLoc } = this.props;
+        const { event } = this.props;
         return(
             <li className="markerItem">
                 <div className="card">
@@ -56,15 +77,14 @@ class MarkerItem extends Component {
                     </header>
                     <div className="card-content">
                         <div className="content">
-                            {loc[0].toFixed(3)},{loc[1].toFixed(3)}
+                            Event info!!
                             <br />
                             {/* <time dateTime={Date.now()}>{Date.now()}</time> */}
-                            <div>{this.props.index}</div>
                         </div>
                     </div>
                     <footer className="card-footer">
                         <a className="card-footer-item is-size-7">Edit</a>
-                        <a className="card-footer-item is-size-7" onClick={removeLoc}>Delete</a>
+                        <a className="card-footer-item is-size-7">Delete</a>
                     </footer>
                 </div>
             </li>

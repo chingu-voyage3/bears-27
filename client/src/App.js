@@ -8,7 +8,6 @@ import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
 import './App.css';
-import TripCard from './components/TripCard'
 
 
 const KEY_IP_LOC = '02c1559982a189';
@@ -25,6 +24,7 @@ class AppContainer extends Component {
       suggestions: [],
       activeSuggestion: undefined,
       isSearching: false,
+      itinerary: []
     }
   }
 
@@ -110,7 +110,7 @@ class AppContainer extends Component {
   }
 
   render() {
-    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching, itinerary } = this.state;
     return (
       <App  
       locs={locs}
@@ -127,6 +127,7 @@ class AppContainer extends Component {
         remove: this.removeLoc.bind(this),
         setFloater: this.setFloatLoc.bind(this)
       }}
+      itinerary={itinerary}
       />
     );
   }
@@ -140,19 +141,12 @@ class App extends Component {
     const { 
       locs, locHelpers, floatingLoc, 
       suggestions, setActiveSuggestion, activeSuggestion,
-      handleInputSearch, isSearching
+      handleInputSearch, isSearching,
+      itinerary
     } = this.props;
     return (
       <div className="App">
         <div className="columns is-gapless">
-          {/* <div className="column is-one-third">
-            <Panel 
-            locs={locs} 
-            locHelpers={locHelpers} 
-            removeLocFactory={removeLocFactory} 
-            setSuggestions={setSuggestions}
-            />
-          </div> */}
           <div className="column is-12" id="contentContainer">
             <EventCard 
             suggestion={activeSuggestion} 
@@ -165,6 +159,9 @@ class App extends Component {
             floatingLoc={floatingLoc} 
             suggestions={suggestions}
             setActiveSuggestion={setActiveSuggestion}
+            />
+            <Panel 
+            itinerary={itinerary} 
             />
             {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
           </div>

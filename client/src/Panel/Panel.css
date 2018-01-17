@@ -1,3 +1,44 @@
 .markerItem {
     margin: 0.25rem 0;
 }
+
+
+#panelContainer {
+    position: absolute;
+    top: 0; 
+    left: 80%; 
+    width: 20%;
+    height: 100%;
+    padding-top: 2rem !important;
+    z-index: 10;
+
+
+    background-color: rgba(255,255,255, 0.8);
+    padding: 1rem;
+
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+}
+
+#panelTrigger {
+    position: absolute;
+    top: 0; 
+    right: 0px;
+    margin-right: 10px; 
+    width: 30px;
+    height: 30px;
+    margin-top: 2rem !important;
+    z-index: 10;
+}
+
+#panelTrigger > i {
+    color: #209cee;
+}
+
+#panelTrigger > i:hover {
+    cursor: pointer;
+    color: black;
+    transition: color 1s;
+}
