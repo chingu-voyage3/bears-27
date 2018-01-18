@@ -20,15 +20,18 @@ export default class Panel extends Component {
         const { itinerary } = this.props;
         const { isRetracted } = this.state;
         if(isRetracted) return (
-            <div id="panelTrigger">
-                <i class="fa fa-list fa-2x" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
+            <div id="panelTriggerContainer">
+                <div id="panelTrigger">
+                    <i class="fa fa-list fa-lg grow" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
+                </div>
             </div>
+            
         )
         return (
             <div id="panelContainer">
                 <div className="columns">
                     <div className="column is-12">
-                        <i className="fa fa-arrow-circle-o-right" 
+                        <i className="fa fa-arrow-circle-o-right grow" 
                         aria-hidden="true" 
                         onClick={this.handleRetract.bind(this)}></i>
                         Current itinerary

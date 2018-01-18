@@ -22,23 +22,34 @@
     border-color: white;
 }
 
-#panelTrigger {
+#panelTriggerContainer {
     position: absolute;
     top: 0; 
-    right: 0px;
-    margin-right: 10px; 
-    width: 30px;
-    height: 30px;
-    margin-top: 2rem !important;
-    z-index: 10;
+    right: 0;
+    z-index: 1000;
+    cursor: pointer;
+    
+}
+
+#panelTrigger {
+    box-sizing: border-box;
+    border: 2px solid rgba(0,0,0,0);
+    
+    margin-right: 10px !important;  
+    margin-top: 10px !important;
 }
 
 #panelTrigger > i {
     color: #209cee;
+    font-size: 30px;
 }
 
 #panelTrigger > i:hover {
-    cursor: pointer;
-    color: black;
-    transition: color 1s;
+    
+    color: #1496ed;
+    transition: color 0.5s;
 }
+
+
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); }
