@@ -1,3 +1,4 @@
+
 let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 
@@ -16,9 +17,21 @@ itinerarySchema.statics.addEvent = (time,userId, itID, eventID, callback) => {
     //TODO: Verify that this is a valid action
     Itinerary.findOne({"_id" : itID})
     .then(result => {
+        // Check to see if an itinerary was either shared with the provided user, or belongs to them
+        // As of right now I have decided that you shouldnt be able to add events to a public itinerary
+        // That wasnt shared with you.
+        if((result.owner == userId) || result.sharedWith.includes(userId)){
         result.events.push({time: time, eventData: eventID})
         result.save();
         callback(null, result)
+        }
+        else {
+            throw new Error("You do not have permission to edit this itinerary")
+        }
+
+    })
+    .catch((error) => {
+        callback(error, null);
     })
 }
 

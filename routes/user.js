@@ -27,7 +27,23 @@ router.get('/', function(req, res){
     }
 })
 
-
+router.get('/addStarred', function(req, res){
+    let yelpID = req.body.yelpID;
+    let yelpName = req.body.yelpName;
+    if(req.isAuthenticated()){
+        User.addStarredLocation(req.user._id, yelpID, yelpName, function(error, result) {
+            if(error || !result){
+                res.send("Failed to star location")
+            }
+            else {
+                res.send("Location starred")
+            }
+        } )
+    }
+    else {
+        res.send("You must be logged in to star locations")
+    }
+})
 router.get('/myPlannedEvents', function(req, res){
     if(req.isAuthenticated()){
         User.findOne({"_id" : req.user._id})

@@ -1,0 +1,52 @@
+# Routes refactor
+
+* POST /login - Because ppl need to login, returns some info and the JWT token
+	
+	Note: As of right now this shows a login link that redirects you to Google to log in, auth routes take care of setting you
+	as authenticated after that. 
+
+* GET /api/event/{id} - Get info of an event with the given id (ppl attending, etc)
+
+	Note: Currently returns all entries in events, and the UserIDs of those people, if you want we can have this populated with some 
+	part of the user's data, but I dont like the idea of fully sending every user's profile.
+
+* POST /api/event - Register new event (all the info required to create the event in the payload + JWT header)
+
+	Note: Given a post request containing a yelpID and a date (As a string that is parseable) it will return the 
+	newly created object
+	
+* GET /api/itinerary - Returns the itinerary of the user (all of his events with all the pertinent info)
+
+	This actually returns a list of public itineraries right now, /api/itineraries/mine does what you requested
+	Note: If I need to change this I can.
+
+* GET /api/itinerary/{id} - Returns the event the user is attending (with info like when is he attending, etc)
+
+	Done
+
+* GET /api/search - With the location data as the payload (zipcode/name/latitude-longitude), searches near places
+
+	This currently exists as /places/near/{zipcode}/ and places/near/{zipcode}/category/{category}, but I am not sure exactly how you want 
+	it to work, so if there are changes in functionality you want let me know. 
+	
+Also: 
+
+* POST /api/itineraries/new 
+	
+	Note: Assuming the user is logged in it will create a new event with 'eventDate' and 'isPublic' (Note, if it is not public isPublic should be undefined.
+
+* POST /api/users/addStarred
+	
+	Note: Given the post request containing a yelpID and a yelpName adds that to their array of starred locations (Provided it doesnt already exist. 
+	
+	This should likely link to /places/yelpID and display yelpName on the user's profile.
+	
+* POST /api/itineraries/addEvent/{itineraryID}.
+
+	Note: Given a date (String) and eventID (body) along with the user being logged in and the parameter of ItineraryID it will add an
+	event to the itinerary and then return the updated itinerary. 
+
+Outdated? 
+
+	user/addPlannedEvents/{id}, addPossibleEvents/{id} - I personally changed this to places that are starred, but I havent removed the code yet (I wanted to make sure nobody cares about this being a feature)
+	
