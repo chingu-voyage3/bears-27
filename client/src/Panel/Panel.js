@@ -21,8 +21,8 @@ export default class Panel extends Component {
         const { isRetracted } = this.state;
         if(isRetracted) return (
             <div id="panelTriggerContainer">
-                <div id="panelTrigger">
-                    <i className="fa fa-list fa-lg grow" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
+                <div id="panelTriggerIn" onClick={this.handleRetract.bind(this)}>
+                    <i className="fa fa-list fa-lg grow" aria-hidden="true"></i>
                 </div>
             </div>
             
@@ -31,10 +31,18 @@ export default class Panel extends Component {
             <div id="panelContainer">
                 <div className="columns">
                     <div className="column is-12">
-                        <i className="fa fa-arrow-circle-o-right grow" 
-                        aria-hidden="true" 
-                        onClick={this.handleRetract.bind(this)}></i>
-                        Current itinerary
+                        <div id="panelTriggerOut">
+                            <i className="fa fa-arrow-circle-o-right grow fa-2x"
+                            aria-hidden="true" 
+                            onClick={this.handleRetract.bind(this)} 
+                            />
+                        </div>
+                        <div className="is-size-4" id="panel-title">Current itinerary</div>
+                    </div>
+                </div>
+
+                <div className="columns">
+                    <div className="column is-12">
                         <ListMarkers itinerary={itinerary} />
                     </div>
                 </div>
@@ -46,7 +54,20 @@ export default class Panel extends Component {
 class ListMarkers extends Component {
 
     render() {
-        const itinerary = this.props.itinerary || ["default message for no itinerary"];
+        const { itinerary } = this.props;
+        if( !itinerary.length ) itinerary[0] = {
+            name: "Test place",
+            address: [
+                "46TH Street Between Broadway And 9th Ave",
+                "Manhattan, NY 10036"
+            ],
+            phone: '+3 3334 1412',
+            attendance: 32,
+            location: {
+                latitude: (Math.random()-0.5)*100,
+                longitude: (Math.random()-0.5)*100
+            }
+        };
         return (
             <aside className="menu">            
                 <ul className="menu-list">
@@ -70,7 +91,7 @@ class MarkerItem extends Component {
                 <div className="card">
                     <header className="card-header">
                         <p className="card-header-title">
-                            Location
+                            { event.name }
                         </p>
                         <a className="card-header-icon" aria-label="more options">
                             <span className="icon">
@@ -80,13 +101,20 @@ class MarkerItem extends Component {
                     </header>
                     <div className="card-content">
                         <div className="content">
-                            Event info!!
-                            <br />
-                            {/* <time dateTime={Date.now()}>{Date.now()}</time> */}
+                            <div className="list-item-field list-item-address">
+                                { event.address.join(', ').substring(0, 30) + '...' }
+                            </div>
+                            <div className="list-item-field list-item-phone">{ event.phone }</div>
+                            <div className="list-item-field list-item-attendance">
+                                Attendance: <strong>{event.attendance}</strong>
+                            </div>
+                            <div className="list-item-field list-item-location">
+                                { event.location.latitude.toFixed(2) }, {event.location.longitude.toFixed(2)}
+                            </div>
                         </div>
                     </div>
                     <footer className="card-footer">
-                        <a className="card-footer-item is-size-7">Edit</a>
+                        <a className="card-footer-item is-size-7">Details</a>
                         <a className="card-footer-item is-size-7">Delete</a>
                     </footer>
                 </div>

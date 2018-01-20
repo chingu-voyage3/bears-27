@@ -103,6 +103,7 @@ class AppContainer extends Component {
     .then( (results) => {
         if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
         this.setState({ isSearching: false });
+        console.log(results.data);
         this.setSuggestions(results.data.businesses.filter( (b) => {
           return b.coordinates && b.coordinates.latitude && b.coordinates.longitude;
         }));
