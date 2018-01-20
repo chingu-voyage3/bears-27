@@ -29,7 +29,7 @@ console.log("MONGO::: " + mongoose.connection.readyState);
 
 
 // Serve static assets
-app.use(express.static(path.resolve(__dirname, 'client', 'public')));
+app.use(express.static(path.resolve(__dirname, 'client', 'build')));
 
 // Needed for login
 app.use(require('express-session')({ secret: 'random string', resave: true, saveUninitialized: true }));

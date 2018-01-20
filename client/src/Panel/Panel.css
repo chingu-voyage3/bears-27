@@ -1,3 +1,64 @@
 .markerItem {
     margin: 0.25rem 0;
 }
+
+
+#panelContainer {
+    position: absolute;
+    top: 0; 
+    left: 80%; 
+    width: 20%;
+    height: 100%;
+    padding-top: 2rem !important;
+    z-index: 10;
+
+
+    background-color: rgba(255,255,255, 0.8);
+    padding: 1rem;
+
+    border-radius: 3px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+}
+
+#panelTriggerContainer {
+    position: absolute;
+    top: 0; 
+    right: 0;
+    z-index: 9;
+    cursor: pointer;
+    
+
+    background-color: rgba(255, 255, 255, 0.75);
+
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-color: rgba(255,255,255, 0.75);
+    border-bottom-left-radius: 50%;
+}
+
+#panelTrigger {
+    box-sizing: border-box;
+    border: 2px solid rgba(0,0,0,0);
+    
+    margin-right: 10px !important;  
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    margin-left: 10px !important;
+}
+
+#panelTrigger > i {
+    color: #1496ed;
+    font-size: 30px;
+}
+
+#panelTrigger > i:hover {
+    
+}
+
+
+.grow { transition: all .2s ease-in-out; }
+.grow:hover { transform: scale(1.1); }

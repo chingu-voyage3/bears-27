@@ -1,10 +1,12 @@
+var path = require('path');
 var express = require('express');
 var router = express.Router();
 let User = require('../models/User')
 
 //Homepage
 router.get('/', function (req, res) {
-  res.sendFile(path.resolve(__dirname, '..','client' ,'public', 'index.html'));
+  console.log("THIS LINE DOESNT RUN, because if we serve the build folder as public it detects the index.html");
+  res.sendFile(path.resolve(__dirname, '..','client' ,'build', 'index.html'));
 });
 
 router.get('/login', function(req, res){

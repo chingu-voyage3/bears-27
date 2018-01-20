@@ -1,7 +1,6 @@
 {
-  "name": "leaflet-test",
+  "name": "bears-27",
   "version": "0.1.0",
-  "homepage": "https://marianoheller.github.io/leaflet-test",
   "private": true,
   "engines": {
     "node": ">=7.7.3"

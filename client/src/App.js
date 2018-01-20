@@ -7,8 +7,8 @@ import MapPopup from './Map/MapPopup';
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
+import Login from './Login/Login';
 import './App.css';
-import TripCard from './components/TripCard'
 
 
 const KEY_IP_LOC = '02c1559982a189';
@@ -25,11 +25,17 @@ class AppContainer extends Component {
       suggestions: [],
       activeSuggestion: undefined,
       isSearching: false,
+      itinerary: []
     }
   }
 
   componentDidMount() {
     /* this.getCurrentPosition(); */
+    this.getItinerary();
+  }
+
+  componentDidUpdate() {
+    /* this.getItinerary(); */
   }
 
   getCurrentPosition() {
@@ -47,12 +53,12 @@ class AppContainer extends Component {
     })
   }
 
-
-
   setFloatLoc(loc) {
     this.setState({
       floatingLoc: loc
-    })
+    });
+    if(!loc) return;
+    this.handleMapSearch(loc);
   }
 
   addLoc(loc) {
@@ -93,11 +99,13 @@ class AppContainer extends Component {
 
   handleInputSearch(input) {
     this.setState({isSearching: true});
-    axios.get(`/food/json/near/${input}`)
+    axios.get(`/api/places/near/${input}`)
     .then( (results) => {
-        if( !results.data.jsonBody.businesses) throw Error("businesses field doesn't exists. Wrong response.");
+        if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
         this.setState({ isSearching: false });
-        this.setSuggestions(results.data.jsonBody.businesses);
+        this.setSuggestions(results.data.businesses.filter( (b) => {
+          return b.coordinates && b.coordinates.latitude && b.coordinates.longitude;
+        }));
     })
     .catch( (e) => {
         this.setState({ isSearching: false });
@@ -106,11 +114,39 @@ class AppContainer extends Component {
   }
 
   handleMapSearch(loc) {
+    this.setState({isSearching: true});
+    axios.get(`/api/places/near/${loc[0]}/${loc[1]}`)
+    .then( (results) => {
+        if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
+        this.setState({ isSearching: false });
+        this.setSuggestions(results.data.businesses.filter( (b) => {
+          return b.coordinates && b.coordinates.latitude && b.coordinates.longitude;
+        }));
+    })
+    .catch( (e) => {
+        this.setState({ isSearching: false });
+        console.log("ERROR!", e);
+    })
+  }
 
+  getItinerary() {
+    console.log("GETING ITINERARY");
+
+    axios.get('/api/itineraries/mine')
+    .then((response) => {
+      console.log("GOT ITINERARY", response.data);
+    })
+    .catch( (err) => {
+      console.log("Itinerary getter error", err);
+    })
+  }
+
+  handleGoogleLogin() {
+    window.open('/auth/google');
   }
 
   render() {
-    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching, itinerary } = this.state;
     return (
       <App  
       locs={locs}
@@ -127,6 +163,8 @@ class AppContainer extends Component {
         remove: this.removeLoc.bind(this),
         setFloater: this.setFloatLoc.bind(this)
       }}
+      itinerary={itinerary}
+      handleGoogleLogin={this.handleGoogleLogin.bind(this)}
       />
     );
   }
@@ -140,20 +178,17 @@ class App extends Component {
     const { 
       locs, locHelpers, floatingLoc, 
       suggestions, setActiveSuggestion, activeSuggestion,
-      handleInputSearch, isSearching
+      handleInputSearch, isSearching,
+      itinerary,
+      handleGoogleLogin
     } = this.props;
     return (
       <div className="App">
         <div className="columns is-gapless">
-          {/* <div className="column is-one-third">
-            <Panel 
-            locs={locs} 
-            locHelpers={locHelpers} 
-            removeLocFactory={removeLocFactory} 
-            setSuggestions={setSuggestions}
-            />
-          </div> */}
           <div className="column is-12" id="contentContainer">
+            <Login 
+            handleGoogleLogin={handleGoogleLogin}
+            />
             <EventCard 
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
@@ -165,6 +200,9 @@ class App extends Component {
             floatingLoc={floatingLoc} 
             suggestions={suggestions}
             setActiveSuggestion={setActiveSuggestion}
+            />
+            <Panel 
+            itinerary={itinerary} 
             />
             {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
           </div>
