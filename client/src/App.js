@@ -7,6 +7,7 @@ import MapPopup from './Map/MapPopup';
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
+import Login from './Login/Login';
 import './App.css';
 
 
@@ -52,7 +53,8 @@ class AppContainer extends Component {
   setFloatLoc(loc) {
     this.setState({
       floatingLoc: loc
-    })
+    });
+    this.handleMapSearch(loc);
   }
 
   addLoc(loc) {
@@ -106,7 +108,22 @@ class AppContainer extends Component {
   }
 
   handleMapSearch(loc) {
+    console.log('MAP searching', loc);
+    this.setState({isSearching: true});
+    axios.get(`/near/${loc[0]}/${loc[1]}`)
+    .then( (results) => {
+        if( !results.data.jsonBody.businesses) throw Error("businesses field doesn't exists. Wrong response.");
+        this.setState({ isSearching: false });
+        this.setSuggestions(results.data.jsonBody.businesses);
+    })
+    .catch( (e) => {
+        this.setState({ isSearching: false });
+        console.log("ERROR!", e);
+    })
+  }
 
+  handleGoogleLogin() {
+    window.open('/auth/google');
   }
 
   render() {
@@ -120,6 +137,7 @@ class AppContainer extends Component {
       suggestions={suggestions}
       setActiveSuggestion={this.setActiveSuggestion.bind(this)}
       activeSuggestion={activeSuggestion}
+      handleMapSearch={this.handleMapSearch.bind(this)}
       handleInputSearch={this.handleInputSearch.bind(this)}
       isSearching={isSearching}
       locHelpers={{
@@ -128,6 +146,7 @@ class AppContainer extends Component {
         setFloater: this.setFloatLoc.bind(this)
       }}
       itinerary={itinerary}
+      handleGoogleLogin={this.handleGoogleLogin.bind(this)}
       />
     );
   }
@@ -141,13 +160,17 @@ class App extends Component {
     const { 
       locs, locHelpers, floatingLoc, 
       suggestions, setActiveSuggestion, activeSuggestion,
-      handleInputSearch, isSearching,
-      itinerary
+      handleMapSearch, handleInputSearch, isSearching,
+      itinerary,
+      handleGoogleLogin
     } = this.props;
     return (
       <div className="App">
         <div className="columns is-gapless">
           <div className="column is-12" id="contentContainer">
+            <Login 
+            handleGoogleLogin={handleGoogleLogin}
+            />
             <EventCard 
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}

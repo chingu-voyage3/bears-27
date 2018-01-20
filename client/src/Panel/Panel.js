@@ -22,7 +22,7 @@ export default class Panel extends Component {
         if(isRetracted) return (
             <div id="panelTriggerContainer">
                 <div id="panelTrigger">
-                    <i class="fa fa-list fa-lg grow" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
+                    <i className="fa fa-list fa-lg grow" aria-hidden="true" onClick={this.handleRetract.bind(this)}></i>
                 </div>
             </div>
             
