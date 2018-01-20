@@ -25,6 +25,26 @@ router.get('/near/:zipcode/category/:category', function (req, res) {
     })
   });
 
+  router.get('/near/:lat/:long/category/:category', function (req, res) {
+    let long = String(req.params.long);
+    let lat = String(req.params.lat);
+    let category = String(req.params.category);
+    // Endpoint to allow people to find certain categories of things near a zipcode. 
+    // As a note it appears that if your category isnt found it just ignores it? 
+    // IE if you do a search for asdf it will return all results in the zip code
+    // But if you do bars it will only return bars.
+    // this causes the problem of typos, but if we make it so that the user cannot/doesnt directly access the API
+    // this might be fine? 
+    client.search({
+        categories: category,
+        longitude: long,
+        latitude: lat,
+    }).then(yelpdata => {
+        res.send(yelpdata.jsonBody);
+    }).catch(yelperror => {
+        res.send(yelperror);
+    })
+  });
 router.get('/near/:zipcode', function (req, res) {
     let zipcode = req.params.zipcode;
     client.search({
@@ -37,6 +57,19 @@ router.get('/near/:zipcode', function (req, res) {
     })
   });
 
+  router.get('/near/:lat/:long', function (req, res) {
+    let lat = req.params.lat;
+    let long = req.params.long;
+    client.search({
+        term:'events', 
+        latitude: lat, 
+        longitude: long,
+    }).then(yelpdata => {
+        res.json(yelpdata.jsonBody);
+    }).catch(yelperror => {
+        res.send(yelperror);
+    })
+  });
 
 router.get('/details/:id', function (req, res){
     //Find the event with the provided yelp ID

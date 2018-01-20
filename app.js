@@ -47,18 +47,16 @@ app.use(function(req, res, next) {
 
 //Routes
 app.use('/', index);
-let food = require('./routes/food')
-app.use('/food', food)
 let auth = require('./routes/auth')
 app.use('/auth', auth)
 let events = require('./routes/events')
-app.use('/events', events)
+app.use('/api/events', events)
 let users = require('./routes/user')
-app.use('/users', users)
+app.use('/api/users', users)
 let itineraries = require('./routes/itineraries')
-app.use('/itineraries', itineraries)
+app.use('/api/itineraries', itineraries)
 let places = require('./routes/places')
-app.use('/json/places', places)
+app.use('/api/places', places)
 
 let test = require('./routes/test')
 app.use('/test', test)
