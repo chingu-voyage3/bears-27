@@ -40,24 +40,29 @@ router.get("/delete/:id", function(req, res){
     //TODO: Implement
 })
 
-router.get('/addEvent/:itineraryID/:eventID', function(req, res){
-    //TODO: Fix this
-    let tripID = req.params.eventID;
+router.get('/addEvent/:itineraryID/', function(req, res){
+    // Params: eventID, itineraryID, (Logged in user), date
+    if(!req.isAuthenticated()){
+        res.send("You must be logged in to add events")
+    }
+    else{
+    let tripID = req.body.eventID;
     let itID = req.params.itineraryID;
     let userID = req.user._id;
+    let date = String(req.post.date);
     TripEvent.findOne({"_id": tripID})
     .then((event) => {
-        Itinerary.addEvent(Date.parse("1/2/2003"), userID,  itID, event._id, (err, itinerary) => {
+        Itinerary.addEvent(new Date(date), userID,  itID, event._id, (err, itinerary) => {
             res.send(itinerary)
         } )
     })
+}
 })
 
 router.post('/new', function(req, res){
-    //TODO: Fix this
     let date = String(req.body["eventDate"]);
     let isPublic = Boolean(req.body["isPublic"]);
-    let userID = req.user ? req.user._id: null;
+    let userID = req.user ? req.user._id: '5a621090080cec4e90938dc7';
     date = Date.parse(date)
     if(userID){
         Itinerary.createNew(date, isPublic, userID, function(err, result){
