@@ -44,28 +44,39 @@ export default class EventCard extends Component {
                             <div className="card-content">
                                 <div className="media">
                                     <div className="media-content">
-                                        <p className="title is-4">{suggestion.name}</p>
-                                        <p className="subtitle is-6">{suggestion.phone}</p>
+                                        <div className="title is-4">{suggestion.name}</div>
+                                        <div className="subtitle is-6">{suggestion.phone}</div>
                                     </div>
                                 </div>
 
                                 <div className="content">
-                                    {suggestion.location.display_address.map( (addr, i) => {
-                                        return <p key={`addr${i}`}>{addr}</p>
-                                    })}
-                                    <p>{`Rating: ${suggestion.rating}/5`}</p>
+                                    <div>
+                                    {suggestion.location.display_address.join(', ')}
+                                    </div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
+                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
                                 </div>
                             </div>
-                        </div>
-                        <div className="field is-grouped">
-                            <div className="control">
-                                <button className="button is-link">Submit</button>
-                            </div>
-                            <div className="control">
-                                <button 
-                                className="button is-text"
-                                onClick={this.handleModalClose.bind(this)}
-                                >Cancel</button>
+                            <div className="field is-grouped">
+                                <div className="panel-buttons-container">
+                                    <div className="control">
+                                        <button className="button is-link is-medium">Submit</button>
+                                    </div>
+                                    <div className="control">
+                                        <button 
+                                        className="button is-text  is-medium"
+                                        onClick={this.handleModalClose.bind(this)}
+                                        >Cancel</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -90,12 +90,12 @@ class MarkerItem extends Component {
             <li className="markerItem">
                 <div className="card">
                     <header className="card-header">
-                        <p className="card-header-title">
+                        <div className="card-header-title card-header-title-list">
                             { event.name }
-                        </p>
-                        <a className="card-header-icon" aria-label="more options">
+                        </div>
+                        <a className="card-header-icon card-header-icon-list" aria-label="more options">
                             <span className="icon">
-                                <i className="fa fa-angle-down" aria-hidden="true"></i>
+                                <i className="fa fa-angle-up" aria-hidden="true"></i>
                             </span>
                         </a>
                     </header>

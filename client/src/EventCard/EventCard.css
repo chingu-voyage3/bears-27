@@ -5,16 +5,35 @@
 
 #eventCardContainer {
     background-color: white;
-    padding: 2rem;
     border-radius: 0.5rem;
+    
+    /*
+    padding: 2rem;
     border-width: 1px;
     border-style: solid;
-    border-color: #AAA;
-
-    overflow:hidden;
+    border-color: #AAA; */
 }
 
-#eventCardContainer > .card{
-    box-shadow: none;
-    overflow:hidden;
+#eventCardContainer > .card {
+    display: flex; 
+    flex-direction: column;
+}
+
+#eventCardContainer > .card > * {
+    box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+    flex-shrink: 0;
+}
+
+#eventCardContainer > .card > .card-content {
+    overflow-y: auto;
+    flex-shrink: 1;
+}
+
+.panel-buttons-container {
+    margin: auto;
+}
+
+.panel-buttons-container  > .control{
+    display: inline-block;
+    margin: 0 1rem;
 }

@@ -16,10 +16,9 @@
     background-color: rgba(255,255,255, 0.8);
     padding: 1rem;
 
-    border-radius: 3px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: white;
+    /* border-left-color: #00d1b2;
+    border-left-width: 1px;
+    border-left-style: solid; */
 }
 
 #panelTriggerContainer {
@@ -61,6 +60,7 @@
 
 #panelTriggerOut {
     display: inline-block;
+    cursor: pointer;
 }
 
 #panelTriggerOut > i {
@@ -76,13 +76,32 @@
 .grow { transition: all .2s ease-in-out; }
 .grow:hover { transform: scale(1.1); }
 
-.card {
+.markerItem > .card {
     border-radius: 3px !important;
     border-color: #00d1b2;
     border-width: 1px;
     border-style: solid;
     box-shadow: 0 2px 3px #00d1b227 !important;
 }
+
+.markerItem > .card > .card-header {
+    background-color: #209cee;
+    border-color: transparent;
+}
+
+.card-header-title-list {
+    color: white;
+    font-weight: inherit;
+}
+
+.card-header-icon-list {
+    color: white !important;
+}
+
+.card-header-icon-list:hover {
+    background-color: #1496ed !important;
+}
+
 
 .list-item-field {
     padding-top: 5px;
