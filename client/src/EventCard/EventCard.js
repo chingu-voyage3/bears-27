@@ -31,10 +31,11 @@ export default class EventCard extends Component {
         const { suggestion } = this.props;
         if (!suggestion) return null;
         return (
+        <div id="eventCardContainer">
             <div className={`modal ${suggestion ? "is-active" : ""}`}>
-                <div className="modal-background"></div>
+                <div className="modal-background modal-card-background"></div>
                 <div className="modal-content">
-                    <div id="eventCardContainer">
+                    <div id="eventCardContentContainer">
                         <div className="card">
                             <div className="card-image">
                                 <figure className="image is-4by3">
@@ -51,28 +52,21 @@ export default class EventCard extends Component {
 
                                 <div className="content">
                                     <div>
-                                    {suggestion.location.display_address.join(', ')}
+                                    {suggestion.location.display_address.filter( (n) => {
+                                        return n !== '[no name]';
+                                    }).join(', ')}
                                     </div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
-                                    <div>{`Rating: ${suggestion.rating}/5`}</div>
                                     <div>{`Rating: ${suggestion.rating}/5`}</div>
                                 </div>
                             </div>
                             <div className="field is-grouped">
                                 <div className="panel-buttons-container">
                                     <div className="control">
-                                        <button className="button is-link is-medium">Submit</button>
+                                        <button className="button is-link">Submit</button>
                                     </div>
                                     <div className="control">
                                         <button 
-                                        className="button is-text  is-medium"
+                                        className="button is-text"
                                         onClick={this.handleModalClose.bind(this)}
                                         >Cancel</button>
                                     </div>
@@ -87,6 +81,7 @@ export default class EventCard extends Component {
                 onClick={this.handleModalClose.bind(this)}
                 ></button>
             </div>
+        </div>
         )
     }
 }
