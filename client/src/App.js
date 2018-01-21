@@ -103,6 +103,7 @@ class AppContainer extends Component {
     .then( (results) => {
         if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
         this.setState({ isSearching: false });
+        console.log(results.data);
         this.setSuggestions(results.data.businesses.filter( (b) => {
           return b.coordinates && b.coordinates.latitude && b.coordinates.longitude;
         }));
@@ -182,6 +183,39 @@ class App extends Component {
       itinerary,
       handleGoogleLogin
     } = this.props;
+
+    if( !itinerary.length ) {
+      itinerary[0] = {
+          name: "Test place",
+          address: [
+              "46TH Street Between Broadway And 9th Ave",
+              "Manhattan, NY 10036"
+          ],
+          phone: '+3 3334 1412',
+          attendance: 32,
+          location: {
+              latitude: (Math.random()-0.5)*100,
+              longitude: (Math.random()-0.5)*100
+          },
+          isFolded: false
+      };
+      itinerary[1] = {
+          name: "Test place",
+          address: [
+              "46TH Street Between Broadway And 9th Ave",
+              "Manhattan, NY 10036"
+          ],
+          phone: '+3 3334 1412',
+          attendance: 32,
+          location: {
+              latitude: (Math.random()-0.5)*100,
+              longitude: (Math.random()-0.5)*100
+          },
+          isFolded: true
+      };
+  }
+
+
     return (
       <div className="App">
         <div className="columns is-gapless">
