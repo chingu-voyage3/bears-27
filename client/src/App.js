@@ -3,7 +3,7 @@ import axios from 'axios';
 import 'font-awesome/css/font-awesome.min.css';
 
 import Map from './Map/Map';
-import MapPopup from './Map/MapPopup';
+/* import MapPopup from './Map/MapPopup'; */
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
@@ -27,6 +27,8 @@ class AppContainer extends Component {
       isSearching: false,
       itinerary: []
     }
+
+    this.getItinerary = debounce( this.getItinerary.bind(this), 750);
   }
 
   componentDidMount() {
@@ -35,7 +37,7 @@ class AppContainer extends Component {
   }
 
   componentDidUpdate() {
-    /* this.getItinerary(); */
+    this.getItinerary();
   }
 
   getCurrentPosition() {
@@ -270,5 +272,19 @@ function getCurrentPositionHTML5() {
     }, (error) => reject(error) );
   })
 }
+
+function debounce(callback, wait, context = this) {
+  let timeout = null 
+  let callbackArgs = null
+  
+  const later = () => callback.apply(context, callbackArgs)
+  
+  return function() {
+    callbackArgs = arguments
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
 
 export default AppContainer;
