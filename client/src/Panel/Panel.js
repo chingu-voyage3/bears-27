@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { CSSTransition } from 'react-transition-group'
+
 import './Panel.css';
 
 export default class Panel extends Component {
@@ -48,14 +50,30 @@ export default class Panel extends Component {
         
         
         if(isRetracted) return (
+            <CSSTransition
+            in={!isRetracted}
+            timeout={{
+                enter: 500,
+                exit: 0,
+            }}
+            classNames="fade"
+            >
             <div id="panelTriggerContainer">
                 <div id="panelTriggerIn" onClick={this.handleRetract.bind(this)}>
                     <i className="fa fa-list fa-lg grow" aria-hidden="true"></i>
                 </div>
             </div>
-            
+            </CSSTransition>
         )
         return (
+            <CSSTransition
+            in={!isRetracted}
+            timeout={{
+                enter: 500,
+                exit: 0,
+            }}
+            classNames="fade"
+            >
             <div id="panelContainer">
                 <div className="columns">
                     <div className="column is-12">
@@ -75,6 +93,8 @@ export default class Panel extends Component {
                     </div>
                 </div>
             </div>
+            </CSSTransition>
+            
         )
     }
 }

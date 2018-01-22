@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var mongoose = require('mongoose');
 var passport = require('passport');
+var cors = require('cors');
 
 const MONGO_URI = process.env.MONGO_DB
 var app = express();
@@ -16,6 +17,8 @@ mongoose.connect(MONGO_URI, {
 });
 
 
+//CORS
+app.use(cors());
 
 // Use EJS at the default view engine.
 app.set('view engine', 'ejs');

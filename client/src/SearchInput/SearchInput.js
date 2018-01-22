@@ -48,7 +48,9 @@ export default class SearchInput extends Component {
                         onKeyUp={this.handleEnterKey.bind(this)}
                         />
                         <span className="icon is-small is-left">
-                            <i className={`fa fa-${isSearching ? 'spinner fa-spin' : 'search'}`}></i>
+                            <i className={`fa fa-${isSearching ? 'spinner fa-spin' : 'search'}`} 
+                            style={{color: `${isSearching ? 'black' : '#DBDBDC'}`}}
+                            ></i>
                         </span>
                     </div>
                     <div className="control is-pulled-right is-hidden-mobile">
