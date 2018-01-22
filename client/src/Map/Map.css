@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.mapIsSearching {
+    cursor: wait !important;
+}
+
 #mapid { 
     height: 100%;
     width: 100%;

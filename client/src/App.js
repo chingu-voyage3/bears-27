@@ -236,6 +236,7 @@ class App extends Component {
             floatingLoc={floatingLoc} 
             suggestions={suggestions}
             setActiveSuggestion={setActiveSuggestion}
+            isSearching={isSearching}
             />
             <Panel 
             itinerary={itinerary} 
