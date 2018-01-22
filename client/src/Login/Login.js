@@ -33,11 +33,11 @@ export default class Login extends Component {
                     </div>
 
                     {/* This button will be removed in the future */}
-                    <button 
+                    {/* <button 
                     className="modal-close is-large" 
                     aria-label="close" 
                     onClick={this.handleCloseModal.bind(this)}
-                    ></button>
+                    ></button> */}
                 </div>
             </div>
         )

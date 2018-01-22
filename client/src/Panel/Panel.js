@@ -46,8 +46,6 @@ export default class Panel extends Component {
             event.handleFoldClick = this.handleFoldFactory(i);
             return event;
         })
-
-        
         
         if(isRetracted) return (
             <CSSTransition
@@ -135,7 +133,6 @@ class MarkerItem extends Component {
 
     render() {
         const { event } = this.props;
-        const { folded } = this.state;
         return(
             <li className="markerItem">
                 <div className="card">

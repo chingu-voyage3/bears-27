@@ -1,3 +1,7 @@
+.modal-content{
+    overflow: hidden;
+}
+
 #eventCardContainer > div > .modal-close:before, #eventCardContainer > div > .modal-close:after {
     background-color:black;
 }
