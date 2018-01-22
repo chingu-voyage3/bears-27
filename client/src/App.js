@@ -143,7 +143,7 @@ class AppContainer extends Component {
   }
 
   handleGoogleLogin() {
-    window.open('/auth/google');
+    window.location.replace("/auth/google");
   }
 
   render() {
