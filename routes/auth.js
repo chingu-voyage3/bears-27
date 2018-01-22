@@ -48,7 +48,8 @@ passport.authenticate('google',
 router.get('/google/callback', 
     passport.authenticate('google', { failureRedirect: '/login' }),
     function(req, res) {
-        res.redirect('/profile');
+      console.log(req.user);
+        res.status(200).json(req.user);
     });
 
 
