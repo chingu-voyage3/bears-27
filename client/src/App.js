@@ -3,7 +3,7 @@ import axios from 'axios';
 import 'font-awesome/css/font-awesome.min.css';
 
 import Map from './Map/Map';
-/* import MapPopup from './Map/MapPopup'; */
+import CategoryChooser from './CategoryChooser/CategoryChooser';
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
@@ -229,6 +229,7 @@ class App extends Component {
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
             />
+            <CategoryChooser />
             <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
             locs={locs} 

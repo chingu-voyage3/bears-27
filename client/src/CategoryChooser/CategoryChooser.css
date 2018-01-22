@@ -1,0 +1,22 @@
+#category-chooser-container {
+    position: absolute;
+    top: 0; 
+    left: 30%; 
+    width: 40%;
+    z-index: 10;
+
+    color: rgb(92, 92, 92);
+    font-style: italic;
+    background-color: rgba(255,255,255,0.75);
+
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+
+    border-color: #00d1b2;
+    border-width: 1px;
+    border-bottom-style: none;
+    border-bottom-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    box-shadow: 0 2px 3px #00d1b227 !important;
+}
