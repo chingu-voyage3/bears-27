@@ -32,6 +32,7 @@ class AppContainer extends Component {
       isSearching: false,
       itinerary: [],
       categoryIndex: 0,
+      auth: {}
     }
 
     this.getItinerary = debounce( this.getItinerary.bind(this), 750);

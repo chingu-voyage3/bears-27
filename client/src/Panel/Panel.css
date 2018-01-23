@@ -21,6 +21,12 @@
     border-left-style: solid; */
 }
 
+/*
+font-size: 1.33333333em; */
+    /* line-height: .75em; */
+    /* vertical-align: -15%; */
+
+
 #panelTriggerContainer {
     position: absolute;
     top: 0; 
@@ -37,6 +43,7 @@
     border-left-width: 2px;
     border-color: rgba(255,255,255, 0.75);
     border-bottom-left-radius: 50%;
+    /* border-top-left-radius: 50%; */
 }
 
 #panelTriggerIn {

@@ -58,7 +58,7 @@ export default class Panel extends Component {
             >
             <div id="panelTriggerContainer">
                 <div id="panelTriggerIn" onClick={this.handleRetract.bind(this)}>
-                    <i className="fa fa-list fa-lg grow" aria-hidden="true"></i>
+                    <i className="fa fa-list grow" aria-hidden="true"></i>
                 </div>
             </div>
             </CSSTransition>

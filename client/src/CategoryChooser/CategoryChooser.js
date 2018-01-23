@@ -21,8 +21,6 @@ export default class CategoryChooser extends Component {
         const { current, categories } = this.props;
         if( current >= categories.length ) return <div>Error!</div>;
 
-        console.log("CURRENT", current);
-
         return (
         <div id="category-chooser-container">
              { categories.map( (cat, i) => (
