@@ -5,8 +5,6 @@
 * User info display somewhere
 * Show event card on details panel click
 * Delete event from ITINERARY on panel click
-* Categories search (bars, food or entertainment)
-
 
 ## BUGS
 

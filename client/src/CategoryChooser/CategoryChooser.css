@@ -19,4 +19,35 @@
     border-left-style: solid;
     border-right-style: solid;
     box-shadow: 0 2px 3px #00d1b227 !important;
+
+}
+
+#category-chooser-container {
+    display: flex;
+    align-content: center;
+    overflow:hidden
+}
+
+#category-chooser-container > .category-button {
+    flex: 1;
+    cursor: pointer;
+}
+
+#category-chooser-container > .category-button:hover {
+    color: white;
+    background-color: #1496ed;
+}
+
+#category-chooser-container > .category-button:first-child {
+    padding-left: 1rem;
+}
+
+#category-chooser-container > .category-button:last-child {
+    padding-right: 1rem;
+}
+
+
+.category-button-selected {
+    color: white;
+    background-color: #1496ed;
 }
