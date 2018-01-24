@@ -68,13 +68,14 @@ function createPopupContent( suggestion, handlers ) {
 export default class MapContainer extends Component {
 
     render() {
-        const { locs, locHelpers, suggestions, setActiveSuggestion } = this.props;
+        const { locs, locHelpers, suggestions, setActiveSuggestion, isSearching } = this.props;
         /* if (!locs.length) return <div>Error loading map. No initial location.</div> */
         return <Map 
         locs={locs} 
         locHelpers={locHelpers} 
         suggestions={suggestions} 
         setActiveSuggestion={setActiveSuggestion}
+        isSearching={isSearching}
         />
     }
 }
@@ -104,7 +105,7 @@ class Map extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { map, markerLayers, floatingMarker, suggestionsMarkers } = this.state;
-        const { suggestions, setActiveSuggestion } = nextProps;
+        const { suggestions, setActiveSuggestion, isSearching } = nextProps;
         if (!map) return;
 
         const { locs: newLocs, floatingLoc } = nextProps;
@@ -203,7 +204,15 @@ class Map extends Component {
         }
         this.setState({
             suggestionsMarkers: suggsMarkers
-        }) 
+        });
+
+        // Loading cursor
+        if(isSearching) {
+            L.DomUtil.addClass(map._container,'mapIsSearching');
+        }
+        else {
+            L.DomUtil.removeClass(map._container,'mapIsSearching');
+        }
 
     }
 
@@ -268,10 +277,11 @@ class Map extends Component {
     }
 
     render() {
+        const { isSearching } = this.props;
         
         return (
-            <div className="mapContainer">
-                <div id="mapid"></div>
+            <div className={`mapContainer ${isSearching ? 'mapIsSearching' : ''}`}>
+                <div id="mapid" ></div>
             </div>
         )
     }

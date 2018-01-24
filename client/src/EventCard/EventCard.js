@@ -53,7 +53,11 @@ export default class EventCard extends Component {
             date: date
         })
         .then( (results) => {
-            console.log(results.data);
+            if(!results.data._id) throw Error('_id not found in response. Bad response.');
+            return results.data._id;
+        })
+        .then( (eventId) => {
+            return axios.get('/api/itineraries/addEvent/'+eventId)
         })
         .catch( (err) => {
             console.log("Error submiting", err);
@@ -81,7 +85,7 @@ export default class EventCard extends Component {
                                 <div className="media">
                                     <div className="media-content">
                                         <div className="title is-4">{suggestion.name}</div>
-                                        <div className="subtitle is-6">{suggestion.phone}</div>
+                                        <div className="subtitle is-size-7	">{suggestion.phone}</div>
                                     </div>
                                 </div>
 

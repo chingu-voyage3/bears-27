@@ -3,7 +3,8 @@ import axios from 'axios';
 import 'font-awesome/css/font-awesome.min.css';
 
 import Map from './Map/Map';
-/* import MapPopup from './Map/MapPopup'; */
+import UserInfo from './UserInfo/UserInfo';
+import CategoryChooser from './CategoryChooser/CategoryChooser';
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
 import Panel from './Panel/Panel';
@@ -12,6 +13,11 @@ import './App.css';
 
 
 const KEY_IP_LOC = '02c1559982a189';
+const CATEGORIES = [
+  'food',
+  'bars',
+  'entertainment'
+]
 
 
 class AppContainer extends Component {
@@ -25,7 +31,13 @@ class AppContainer extends Component {
       suggestions: [],
       activeSuggestion: undefined,
       isSearching: false,
-      itinerary: []
+      itinerary: [],
+      categoryIndex: 0,
+      auth: {
+        isLoggedIn: false,
+        loading: true,
+        data: null
+      }
     }
 
     this.getItinerary = debounce( this.getItinerary.bind(this), 750);
@@ -34,10 +46,33 @@ class AppContainer extends Component {
   componentDidMount() {
     /* this.getCurrentPosition(); */
     this.getItinerary();
+    this.getProfile();
   }
 
   componentDidUpdate() {
     this.getItinerary();
+  }
+
+  getProfile() {
+    axios.get('/profile')
+    .then( (results) => {
+      this.setState({
+        auth: {
+          isLoggedIn: true,
+          loading: true,
+          data: results.data
+        }
+      })
+    })
+    .catch( (err) => {
+      this.setState({
+        auth: {
+          isLoggedIn: false,
+          loading: false,
+          data: null
+        }
+      })
+    })
   }
 
   getCurrentPosition() {
@@ -100,8 +135,9 @@ class AppContainer extends Component {
   }
 
   handleInputSearch(input) {
+    const { categoryIndex } = this.state;
     this.setState({isSearching: true});
-    axios.get(`/api/places/near/${input}`)
+    axios.get(`/api/places/near/${input}/category/${CATEGORIES[categoryIndex]}`)
     .then( (results) => {
         if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
         this.setState({ isSearching: false });
@@ -117,8 +153,9 @@ class AppContainer extends Component {
   }
 
   handleMapSearch(loc) {
+    const { categoryIndex } = this.state;
     this.setState({isSearching: true});
-    axios.get(`/api/places/near/${loc[0]}/${loc[1]}`)
+    axios.get(`/api/places/near/${loc[0]}/${loc[1]}/category/${CATEGORIES[categoryIndex]}`)
     .then( (results) => {
         if( !results.data.businesses) throw Error("businesses field doesn't exists. Wrong response.");
         this.setState({ isSearching: false });
@@ -140,7 +177,7 @@ class AppContainer extends Component {
       console.log("GOT ITINERARY", response.data);
     })
     .catch( (err) => {
-      console.log("Itinerary getter error", err);
+      console.log(err);
     })
   }
 
@@ -148,8 +185,15 @@ class AppContainer extends Component {
     window.location.replace("/auth/google");
   }
 
+  setCategory(index) {
+    this.setState({
+      categoryIndex: index
+    })
+  }
+
   render() {
-    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching, itinerary } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion, 
+      isSearching, itinerary, categoryIndex, auth } = this.state;
     return (
       <App  
       locs={locs}
@@ -161,13 +205,19 @@ class AppContainer extends Component {
       activeSuggestion={activeSuggestion}
       handleInputSearch={this.handleInputSearch.bind(this)}
       isSearching={isSearching}
+      setCategory={this.setCategory.bind(this)}
+      categoryIndex={categoryIndex}
       locHelpers={{
         add: this.addLoc.bind(this),
         remove: this.removeLoc.bind(this),
         setFloater: this.setFloatLoc.bind(this)
       }}
       itinerary={itinerary}
-      handleGoogleLogin={this.handleGoogleLogin.bind(this)}
+      login= {{
+        handleGoogleLogin: this.handleGoogleLogin.bind(this),
+        auth: auth
+      }}
+      
       />
     );
   }
@@ -181,12 +231,12 @@ class App extends Component {
     const { 
       locs, locHelpers, floatingLoc, 
       suggestions, setActiveSuggestion, activeSuggestion,
-      handleInputSearch, isSearching,
+      handleInputSearch, isSearching, setCategory, categoryIndex,
       itinerary,
-      handleGoogleLogin
+      login
     } = this.props;
 
-    if( !itinerary.length ) {
+    /* if( !itinerary.length ) {
       itinerary[0] = {
           name: "Test place",
           address: [
@@ -215,7 +265,7 @@ class App extends Component {
           },
           isFolded: true
       };
-  }
+  } */
 
 
     return (
@@ -223,11 +273,20 @@ class App extends Component {
         <div className="columns is-gapless">
           <div className="column is-12" id="contentContainer">
             <Login 
-            handleGoogleLogin={handleGoogleLogin}
+            handleGoogleLogin={login.handleGoogleLogin}
+            auth={login.auth}
             />
             <EventCard 
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
+            />
+            <CategoryChooser 
+            current={categoryIndex} 
+            categories={CATEGORIES}
+            onChange={setCategory}
+            />
+            <UserInfo 
+            auth={login.auth}
             />
             <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
@@ -236,6 +295,7 @@ class App extends Component {
             floatingLoc={floatingLoc} 
             suggestions={suggestions}
             setActiveSuggestion={setActiveSuggestion}
+            isSearching={isSearching}
             />
             <Panel 
             itinerary={itinerary} 

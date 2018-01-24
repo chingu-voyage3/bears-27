@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.mapIsSearching {
+    cursor: wait !important;
+}
+
 #mapid { 
     height: 100%;
     width: 100%;
@@ -63,6 +67,12 @@
     color: white
 }
 
+.leaflet-control-container > .leaflet-top {
+    top: 15%;
+}
 
-.popupImage {
+@media (max-width: 500px) { 
+    .leaflet-control-container {
+        display: none;
+    }
 }
