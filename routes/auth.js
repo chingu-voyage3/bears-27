@@ -13,7 +13,6 @@ passport.use(new GoogleStrategy({
     callbackURL: "http://localhost:3001/auth/google/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log("MONGO::: " + mongoose.connection.readyState);    
        User.findOrCreate(null, profile.id, profile.name.familyName, profile.name.givenName, 
         function (err, user) {
             return done(err, user);
@@ -46,9 +45,9 @@ passport.authenticate('google',
 //   login page.  Otherwise, the primary route function function will be called,
 //   which, in this example, will redirect the user to the home page.
 router.get('/google/callback', 
-    passport.authenticate('google', { failureRedirect: '/login' }),
+    passport.authenticate('google', { failureRedirect: '/' }),
     function(req, res) {
-        res.redirect('/profile');
+        res.redirect('/');
     });
 
 
