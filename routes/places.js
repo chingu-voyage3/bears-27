@@ -77,7 +77,9 @@ router.get('/details/:id', function (req, res){
     TripEvent.find({"locationID": placeID}).then(
         (results) => {
             if(results.length == 0){
-                {res.send("None yet")}
+                {
+                    res.send("None yet")
+                }
             }
             else {res.send(results)}
         })

@@ -12,15 +12,16 @@ router.get('/', function(req, res){
         }
     ).catch(
         () => {
-            res.send("Unable to list results");
+            res.status(500).send("Unable to list results");
         }
     )
 })
 
 router.get('/mine/', function(req,res){
     if(!req.isAuthenticated()){
-        res.redirect('/login');
+        res.status(401).send("Unathorized");
     }
+    else{
     Itinerary.find({
         owner: req.user._id
     })
@@ -29,7 +30,7 @@ router.get('/mine/', function(req,res){
     })
     .catch((error) => {
         res.send(error);
-    })
+    })}
 })
 
 router.get("/edit/:id", function(req, res){
@@ -43,7 +44,7 @@ router.get("/delete/:id", function(req, res){
 router.get('/addEvent/:itineraryID/', function(req, res){
     // Params: eventID, itineraryID, (Logged in user), date
     if(!req.isAuthenticated()){
-        res.send("You must be logged in to add events")
+        res.status(401).send("You must be logged in to add events")
     }
     else{
     let tripID = req.body.eventID;
@@ -62,7 +63,7 @@ router.get('/addEvent/:itineraryID/', function(req, res){
 router.post('/new', function(req, res){
     let date = String(req.body["eventDate"]);
     let isPublic = Boolean(req.body["isPublic"]);
-    let userID = req.user ? req.user._id: '5a621090080cec4e90938dc7';
+    let userID = req.user ? req.user._id: 'null';
     date = Date.parse(date)
     if(userID){
         Itinerary.createNew(date, isPublic, userID, function(err, result){
@@ -71,7 +72,7 @@ router.post('/new', function(req, res){
         });
     }
     else {
-        res.send("You must be logged in to create an itinerary");
+        res.status(401).send("You must be logged in to create an itinerary");
     }
 })
 
@@ -94,7 +95,7 @@ router.get('/:id', function(req, res){
             res.json(result);
         }
         else {
-            res.send("You are not allowed to view this itinerary")
+            res.status(401).send("You are not allowed to view this itinerary")
         }
 
     })

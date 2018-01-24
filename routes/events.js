@@ -20,11 +20,9 @@ router.get('/', function(req, res){
 router.post('/', function(req, res){
     let yelpID = req.body.yelpID;
     let date = req.body.date;
-    console.log(yelpID)
-    console.log(date)
     TripEvent.createNewEvent("yelp", yelpID, date, function(err, result){
         if(err | !result){
-            res.send('Failed to create event')
+            res.status(500).send('Failed to create event')
         }
         else {
             res.send(result);
@@ -104,7 +102,7 @@ router.get('/attending/:id/:date', function(req, res){
         }
     })
     .catch((error) => {
-        res.send(error.message)
+        res.status(500).send(error.message)
     })
 })
 

@@ -9,15 +9,12 @@ router.get('/', function (req, res) {
   res.sendFile(path.resolve(__dirname, '..','client' ,'build', 'index.html'));
 });
 
-router.get('/login', function(req, res){
-  res.send('<a href="/auth/google">Sign In with Google</a>')
-})
 
 router.get('/profile', function(req, res){
   // We need to find the user each time they load /profile, otherwise their information will
   // not update until they log in again.
-  if(!req.user){
-    res.redirect('/login')
+  if(!req.isAuthenticated()){
+    res.status(401).send("Unauthorized");
   }
   let userID = String(req.user._id);
   User.findOne({
@@ -26,7 +23,7 @@ router.get('/profile', function(req, res){
       res.json(result)
     })
     .catch((error) => {
-      res.send(String(error));
+      res.status(401).send(String(error));
     })
 
 })

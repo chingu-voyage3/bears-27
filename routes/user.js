@@ -10,7 +10,7 @@ router.get('/', function(req, res){
     }
     else if (!req.user.isAdmin){
         console.log("user isnt an admin")
-        res.send("You do not have permissions to access this page")
+        res.status(401).send("You do not have permissions to access this page")
     }
     else{
         User.find({})
@@ -21,7 +21,7 @@ router.get('/', function(req, res){
         ).catch(
             (error) => {
                 console.log(error)
-                res.send("Could not find any results");
+                res.status(500).send("Unable to complete request");
             }
         )
     }
@@ -41,7 +41,7 @@ router.get('/addStarred', function(req, res){
         } )
     }
     else {
-        res.send("You must be logged in to star locations")
+        res.status(401).send("You must be logged in to star locations")
     }
 })
 router.get('/myPlannedEvents', function(req, res){
@@ -52,13 +52,13 @@ router.get('/myPlannedEvents', function(req, res){
         })
     }
     else {
-        res.send("You need to be logged in to view this page")
+        res.status(401).send("You need to be logged in to view this page")
     }
 })
 
 router.get('/addPlannedEvent/:id', function(req, res){
     if(!req.isAuthenticated()){
-        res.send("You must be logged in to complete this action")
+        res.status(401).send("You must be logged in to complete this action")
     }
     else
     {
@@ -85,7 +85,7 @@ router.get('/addPossibleEvent/:id', function(req, res){
             res.send("Added event");
         }
         else{
-            res.send("Could not add event");
+            res.status(500).send("Could not add event");
         }
     })
     }
