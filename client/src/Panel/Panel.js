@@ -73,17 +73,18 @@ export default class Panel extends Component {
             classNames="fade"
             >
             <div id="panelContainer">
+                <div id="panelTriggerOut" className="is-pulled-right">
+                    <i className="fa fa-arrow-circle-o-left grow fa-2x"
+                    aria-hidden="true" 
+                    onClick={this.handleRetract.bind(this)} 
+                    />
+                </div>
                 <div className="columns">
                     <div className="column is-12">
-                        <div id="panelTriggerOut">
-                            <i className="fa fa-arrow-circle-o-right grow fa-2x"
-                            aria-hidden="true" 
-                            onClick={this.handleRetract.bind(this)} 
-                            />
-                        </div>
                         <div className="is-size-4" id="panel-title">Current itinerary</div>
                     </div>
                 </div>
+                
 
                 <div className="columns">
                     <div className="column is-12">

@@ -67,6 +67,12 @@
     color: white
 }
 
+.leaflet-control-container > .leaflet-top {
+    top: 15%;
+}
 
-.popupImage {
+@media (max-width: 500px) { 
+    .leaflet-control-container {
+        display: none;
+    }
 }

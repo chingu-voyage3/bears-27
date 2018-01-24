@@ -6,7 +6,7 @@
 #panelContainer {
     position: absolute;
     top: 0; 
-    left: 75%; 
+    right: 75%; 
     width: 25%;
     height: 100%;
     padding-top: 2rem !important;
@@ -30,7 +30,7 @@ font-size: 1.33333333em; */
 #panelTriggerContainer {
     position: absolute;
     top: 0; 
-    right: 0;
+    left: 0;
     z-index: 9;
     cursor: pointer;
     
@@ -40,9 +40,9 @@ font-size: 1.33333333em; */
     border-style: solid;
     border-width: 0px;
     border-bottom-width: 2px;
-    border-left-width: 2px;
+    border-right-width: 2px;
     border-color: rgba(255,255,255, 0.75);
-    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
     /* border-top-left-radius: 50%; */
 }
 

@@ -3,6 +3,7 @@ import axios from 'axios';
 import 'font-awesome/css/font-awesome.min.css';
 
 import Map from './Map/Map';
+import UserInfo from './UserInfo/UserInfo';
 import CategoryChooser from './CategoryChooser/CategoryChooser';
 import SearchInput from './SearchInput/SearchInput';
 import EventCard from './EventCard/EventCard';
@@ -32,7 +33,11 @@ class AppContainer extends Component {
       isSearching: false,
       itinerary: [],
       categoryIndex: 0,
-      auth: {}
+      auth: {
+        isLoggedIn: false,
+        loading: true,
+        data: null
+      }
     }
 
     this.getItinerary = debounce( this.getItinerary.bind(this), 750);
@@ -41,10 +46,33 @@ class AppContainer extends Component {
   componentDidMount() {
     /* this.getCurrentPosition(); */
     this.getItinerary();
+    this.getProfile();
   }
 
   componentDidUpdate() {
     this.getItinerary();
+  }
+
+  getProfile() {
+    axios.get('/profile')
+    .then( (results) => {
+      this.setState({
+        auth: {
+          isLoggedIn: true,
+          loading: true,
+          data: results.data
+        }
+      })
+    })
+    .catch( (err) => {
+      this.setState({
+        auth: {
+          isLoggedIn: false,
+          loading: false,
+          data: null
+        }
+      })
+    })
   }
 
   getCurrentPosition() {
@@ -149,7 +177,7 @@ class AppContainer extends Component {
       console.log("GOT ITINERARY", response.data);
     })
     .catch( (err) => {
-      console.log("Itinerary getter error", err);
+      console.log(err);
     })
   }
 
@@ -164,7 +192,8 @@ class AppContainer extends Component {
   }
 
   render() {
-    const { locs, floatingLoc, suggestions, activeSuggestion, isSearching, itinerary, categoryIndex } = this.state;
+    const { locs, floatingLoc, suggestions, activeSuggestion, 
+      isSearching, itinerary, categoryIndex, auth } = this.state;
     return (
       <App  
       locs={locs}
@@ -184,7 +213,11 @@ class AppContainer extends Component {
         setFloater: this.setFloatLoc.bind(this)
       }}
       itinerary={itinerary}
-      handleGoogleLogin={this.handleGoogleLogin.bind(this)}
+      login= {{
+        handleGoogleLogin: this.handleGoogleLogin.bind(this),
+        auth: auth
+      }}
+      
       />
     );
   }
@@ -200,7 +233,7 @@ class App extends Component {
       suggestions, setActiveSuggestion, activeSuggestion,
       handleInputSearch, isSearching, setCategory, categoryIndex,
       itinerary,
-      handleGoogleLogin
+      login
     } = this.props;
 
     /* if( !itinerary.length ) {
@@ -240,7 +273,8 @@ class App extends Component {
         <div className="columns is-gapless">
           <div className="column is-12" id="contentContainer">
             <Login 
-            handleGoogleLogin={handleGoogleLogin}
+            handleGoogleLogin={login.handleGoogleLogin}
+            auth={login.auth}
             />
             <EventCard 
             suggestion={activeSuggestion} 
@@ -250,6 +284,9 @@ class App extends Component {
             current={categoryIndex} 
             categories={CATEGORIES}
             onChange={setCategory}
+            />
+            <UserInfo 
+            auth={login.auth}
             />
             <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
