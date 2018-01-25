@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let Itinerary = require('../models/Itinerary');
 let TripEvent = require('../models/TripEvent');
+let User = require('../models/User');
 
 router.get('/', function(req, res){
     //Return a list of all public itineraries
@@ -22,11 +23,17 @@ router.get('/mine/', function(req,res){
         res.status(401).send("Unathorized");
     }
     else{
+    let currentItineraryID = req.user.current_itinerary;
     Itinerary.find({
         owner: req.user._id
     })
+    .populate('events.eventData')
     .then((result) => {
-        res.json(result);
+        res.json({
+            //The current itinerary will be the most recent itinerary
+            current_itinerary: result[result.length - 1],
+            all_itineraries: result
+        });
     })
     .catch((error) => {
         res.send(error);
@@ -37,8 +44,23 @@ router.get("/edit/:id", function(req, res){
     //TODO: Implement
 })
 
-router.get("/delete/:id", function(req, res){
-    //TODO: Implement
+router.get("/delete/:itineraryID/:eventIndex", function(req, res){
+    if(!req.isAuthenticated){
+        res.status(401).send("Unauthorized");
+    }
+    else{
+    let itineraryID = req.params.itineraryID;
+    let eventIndex = req.params.eventIndex;
+    let userId = req.user._id;
+    Itinerary.removeEvent(eventIndex, itineraryID, userId, function(err, updated){
+        if(err || !updated){
+            res.status(500).send("Failed to remove event");
+        }
+        else {
+            res.send(updated);
+        }
+    })
+}
 })
 
 router.get('/addEvent/:itineraryID/', function(req, res){
@@ -69,6 +91,13 @@ router.post('/new', function(req, res){
         Itinerary.createNew(date, isPublic, userID, function(err, result){
             console.log(err)
             res.json(result);
+            User.findOne({"_id": userID}).then((user) => {
+                user.current_itinerary = result._id;
+                user.save();
+                console.log(user);
+            }).catch((error) => {
+                console.log(error);
+            })
         });
     }
     else {
@@ -83,6 +112,7 @@ router.get('/:id', function(req, res){
         userID = req.user._id;
     }
     Itinerary.findOne({ _id: ID})
+    .populate('events.eventData')
     .then((result) => {
         //Determine if the user should be able to see it.
         if(result.public == true){

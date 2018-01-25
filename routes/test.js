@@ -3,6 +3,7 @@ var router = express.Router();
 var User = require('../models/User');
 var TripEvent = require('../models/TripEvent');
 var mongoose = require('mongoose');
+let Itinerary = require('../models/Itinerary');
 
 router.get('/addstarred', function(req, res){
     User.addStarredLocation('5a621090080cec4e90938dc7', 'arizona-jazz-festival-at-the-wigwam-litchfield-park', 'Arizona Jazz Festival At the Wigwam', function(err, result){
@@ -13,6 +14,17 @@ router.get('/addstarred', function(req, res){
             res.send("Failed to add location")
         }
     })
+})
+
+
+
+router.get('/testRemoveFirstEvent', function(req, res){
+    let currentIt = req.user.current_itinerary;
+    console.log(currentIt);
+    Itinerary.removeEvent(0, currentIt, req.user._id, function(err, result){
+        res.send(result);
+    })
+
 })
 
 router.get('/test5', function(req, res){

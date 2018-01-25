@@ -65,7 +65,9 @@ TripEventSchema.statics.createNewEvent = (eventSource, placeID , date, callback)
                     PriceTier: result.jsonBody.price ? result.jsonBody.price.length : null
                 }
                 TripEvent.create(newEvent).then((result) =>
-                    { callback(null, result) }
+                    { 
+                        callback(null, result) 
+                    }
                 ).catch((error) => {
                     console.log(error);
                     callback(error, null)

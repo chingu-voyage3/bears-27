@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let TripEvent = require('../models/TripEvent');
-
+let Itinerary = require('../models/Itinerary');
 
 router.get('/', function(req, res){
     //Return a list of all TripEvents
@@ -20,14 +20,21 @@ router.get('/', function(req, res){
 router.post('/', function(req, res){
     let yelpID = req.body.yelpID;
     let date = req.body.date;
+    if(!req.isAuthenticated()){
+        res.status(401).send("Unauthorized");
+    }
+    else{
     TripEvent.createNewEvent("yelp", yelpID, date, function(err, result){
         if(err | !result){
             res.status(500).send('Failed to create event')
         }
         else {
+            Itinerary.addEvent(date,req.user._id, req.user.current_itinerary, result._id, ()=>{})
             res.send(result);
+
         }
     })
+}
 
 })
 /* 

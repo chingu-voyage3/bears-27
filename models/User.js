@@ -4,6 +4,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let TripEventSchema = require('./TripEvent');
 let TripEvent = TripEventSchema.model;
+let Itinerary = require('./Itinerary');
 
 // create a schema
 var userSchema = new Schema({
@@ -24,7 +25,8 @@ var userSchema = new Schema({
   starredPlaces: [{
     yelpID: String,
     placeName: String,
-  }]
+  }], 
+  current_itinerary: { type: Schema.Types.ObjectId, ref: 'Itinerary' }
 });
 
 userSchema.statics.addStarredLocation = function(ID, yelpID, yelpName, callback){
@@ -60,7 +62,15 @@ userSchema.statics.createUser = function(googleID, lastName, firstName, callback
     if (!result){
       throw new Error("Failed to create user")
     }
-    callback(null, result)
+    return result;
+  }).then((result) => {
+    console.log(result);
+    Itinerary.createNew(new Date(), false, result._id, (err, res) => {
+      console.log("New itinerary" + res);
+      result.current_itinerary = res._id;
+      result.save();
+      callback(null, result);
+    })
   })
   .catch((err) => {
     console.log(err);
