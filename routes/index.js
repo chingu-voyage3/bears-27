@@ -16,6 +16,7 @@ router.get('/profile', function(req, res){
   if(!req.isAuthenticated()){
     res.status(401).send("Unauthorized");
   }
+  else{
   let userID = String(req.user._id);
   User.findOne({
     _id: userID
@@ -26,5 +27,6 @@ router.get('/profile', function(req, res){
       res.status(401).send(String(error));
     })
 
+}
 })
 module.exports = router;

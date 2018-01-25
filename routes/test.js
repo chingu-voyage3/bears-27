@@ -15,6 +15,12 @@ router.get('/addstarred', function(req, res){
     })
 })
 
+router.get('/addItinerary', function(req, res){
+    User.findOne({"_id": req.user._id}).then(() => {
+
+    })
+})
+
 router.get('/test5', function(req, res){
     TripEvent.createNewEvent("yelp", "gary-danko-san-francisco", "1/1/1", function(err, result){
         if(err | !result){

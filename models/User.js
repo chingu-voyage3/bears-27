@@ -24,7 +24,8 @@ var userSchema = new Schema({
   starredPlaces: [{
     yelpID: String,
     placeName: String,
-  }]
+  }], 
+  current_itinerary: { type: Schema.Types.ObjectId, ref: 'Itinerary' }
 });
 
 userSchema.statics.addStarredLocation = function(ID, yelpID, yelpName, callback){
