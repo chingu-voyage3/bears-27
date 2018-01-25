@@ -12,6 +12,24 @@ var itinerarySchema = new Schema({
         eventData: { type: Schema.Types.ObjectId, ref: 'TripEvent' },
     }]
 });
+itinerarySchema.statics.removeEvent = (index, itID, userId, callback) => {
+    Itinerary.findOne({"_id" : itID})
+    .then(result => {
+        if(result.owner == userId){
+            result.events.splice(index, 1);
+            result.save();
+            callback(null, result);
+        }
+        else {
+            throw new Error("You do not have permission to edit this itinerary")
+        }
+
+    })
+    .catch((error) => {
+        console.log(error);
+        callback(error, null);
+    })
+}
 
 itinerarySchema.statics.addEvent = (time,userId, itID, eventID, callback) => {
     //TODO: Verify that this is a valid action

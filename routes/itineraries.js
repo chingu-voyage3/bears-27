@@ -44,8 +44,23 @@ router.get("/edit/:id", function(req, res){
     //TODO: Implement
 })
 
-router.get("/delete/:id", function(req, res){
-    //TODO: Implement
+router.get("/delete/:itineraryID/:eventIndex", function(req, res){
+    if(!req.isAuthenticated){
+        res.status(401).send("Unauthorized");
+    }
+    else{
+    let itineraryID = req.params.itineraryID;
+    let eventIndex = req.params.eventIndex;
+    let userId = req.user._id;
+    Itinerary.removeEvent(eventIndex, itineraryID, userId, function(err, updated){
+        if(err || !updated){
+            res.status(500).send("Failed to remove event");
+        }
+        else {
+            res.send(updated);
+        }
+    })
+}
 })
 
 router.get('/addEvent/:itineraryID/', function(req, res){

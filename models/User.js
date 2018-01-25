@@ -4,6 +4,7 @@ let mongoose = require('mongoose');
 let Schema = mongoose.Schema;
 let TripEventSchema = require('./TripEvent');
 let TripEvent = TripEventSchema.model;
+let Itinerary = require('./Itinerary');
 
 // create a schema
 var userSchema = new Schema({
@@ -61,7 +62,15 @@ userSchema.statics.createUser = function(googleID, lastName, firstName, callback
     if (!result){
       throw new Error("Failed to create user")
     }
-    callback(null, result)
+    return result;
+  }).then((result) => {
+    console.log(result);
+    Itinerary.createNew(new Date(), false, result._id, (err, res) => {
+      console.log("New itinerary" + res);
+      result.current_itinerary = res._id;
+      result.save();
+      callback(null, result);
+    })
   })
   .catch((err) => {
     console.log(err);
