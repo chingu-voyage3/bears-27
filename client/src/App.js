@@ -227,7 +227,10 @@ class AppContainer extends Component {
         remove: this.removeLoc.bind(this),
         setFloater: this.setFloatLoc.bind(this)
       }}
-      itinerary={itinerary}
+      itinerary={{
+        get: this.getItinerary.bind(this),
+        data: itinerary
+      }}
       login= {{
         handleGoogleLogin: this.handleGoogleLogin.bind(this),
         handleLogout: this.handleLogout.bind(this),
@@ -281,6 +284,7 @@ class App extends Component {
             <EventCard 
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
+            getItinerary={itinerary.get}
             />
             <CategoryChooser 
             current={categoryIndex} 
@@ -301,7 +305,7 @@ class App extends Component {
             isSearching={isSearching}
             />
             <Panel 
-            itinerary={itinerary} 
+            itinerary={itinerary.data} 
             />
             {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
           </div>

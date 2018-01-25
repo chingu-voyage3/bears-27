@@ -49,7 +49,7 @@ export default class EventCard extends Component {
     }
 
     handleSubmit() {
-        const { setActiveSuggestion } = this.props;
+        const { setActiveSuggestion, getItinerary } = this.props;
         const { yelpID, date } = this.state;
         if(!yelpID || !date ) return;
 
@@ -63,6 +63,7 @@ export default class EventCard extends Component {
             console.log("RESPONSE POST", results.data);
             this.setState({ isLoading: false })
             setActiveSuggestion(undefined);
+            setTimeout( () => getItinerary(), 500);
         })
         .catch( (err) => {
             this.setState({ isLoading: false })
