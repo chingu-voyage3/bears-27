@@ -14,7 +14,7 @@ export default class UserInfo extends Component {
         return (
             <div id="user-info-container">
                 <div id="user-info-signout" onClick={handleLogout}>
-                    <i class="fa fa-sign-out grow fa-2x" 
+                    <i className="fa fa-sign-out grow fa-2x" 
                     aria-hidden={'Logout, '+ auth.data.name}
                     title={`${auth.data.name}. Logout.`}
                     ></i>

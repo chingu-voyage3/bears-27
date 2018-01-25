@@ -31,7 +31,9 @@ class AppContainer extends Component {
       suggestions: [],
       activeSuggestion: undefined,
       isSearching: false,
-      itinerary: [],
+      itinerary: {
+        events: []
+      },
       categoryIndex: 0,
       auth: {
         isLoggedIn: false,
@@ -40,7 +42,7 @@ class AppContainer extends Component {
       }
     }
 
-    this.getItinerary = debounce( this.getItinerary.bind(this), 750);
+    this.getItinerary = debounce( this.getItinerary.bind(this), 1000);
   }
 
   componentDidMount() {
@@ -50,7 +52,7 @@ class AppContainer extends Component {
   }
 
   componentDidUpdate() {
-    this.getItinerary();
+    /* this.getItinerary(); */
   }
 
   getProfile() {
@@ -170,11 +172,14 @@ class AppContainer extends Component {
   }
 
   getItinerary() {
-    console.log("GETING ITINERARY");
-
     axios.get('/api/itineraries/mine')
     .then((response) => {
-      console.log("GOT ITINERARY", response.data);
+      const { current_itinerary } = response.data;
+      if(!current_itinerary) throw Error("No current_itinerary in response");
+      console.log("CURRENT ITI", current_itinerary);
+      this.setState({
+        itinerary: current_itinerary
+      })
     })
     .catch( (err) => {
       console.log(err);
@@ -261,20 +266,6 @@ class App extends Component {
               longitude: (Math.random()-0.5)*100
           },
           isFolded: false
-      };
-      itinerary[1] = {
-          name: "Test place",
-          address: [
-              "46TH Street Between Broadway And 9th Ave",
-              "Manhattan, NY 10036"
-          ],
-          phone: '+3 3334 1412',
-          attendance: 32,
-          location: {
-              latitude: (Math.random()-0.5)*100,
-              longitude: (Math.random()-0.5)*100
-          },
-          isFolded: true
       };
   } */
 

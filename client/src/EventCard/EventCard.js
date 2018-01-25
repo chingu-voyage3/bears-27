@@ -10,6 +10,10 @@ export default class EventCard extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isLoading: false
+        }
+
         this.handleInputChange = this.handleInputChange.bind(this);        
     }
 
@@ -45,21 +49,23 @@ export default class EventCard extends Component {
     }
 
     handleSubmit() {
+        const { setActiveSuggestion } = this.props;
         const { yelpID, date } = this.state;
         if(!yelpID || !date ) return;
+
+        this.setState({ isLoading: true })
 
         axios.post('/api/events', {
             yelpID: yelpID,
             date: date
         })
         .then( (results) => {
-            if(!results.data._id) throw Error('_id not found in response. Bad response.');
-            return results.data._id;
-        })
-        .then( (eventId) => {
-            return axios.get('/api/itineraries/addEvent/'+eventId)
+            console.log("RESPONSE POST", results.data);
+            this.setState({ isLoading: false })
+            setActiveSuggestion(undefined);
         })
         .catch( (err) => {
+            this.setState({ isLoading: false })
             console.log("Error submiting", err);
         })
     }
@@ -67,7 +73,7 @@ export default class EventCard extends Component {
     render() {
         const { suggestion } = this.props;
         if (!suggestion) return null;
-        const { yelpID, date } = this.state;
+        const { yelpID, date, isLoading } = this.state;
 
         return (
         <div id="eventCardContainer">
@@ -110,14 +116,21 @@ export default class EventCard extends Component {
                                         <button 
                                         className="button is-link"
                                         onClick={this.handleSubmit.bind(this)}
-                                        disabled={ !yelpID || !date }
-                                        >Submit</button>
+                                        disabled={ !yelpID || !date || isLoading }
+                                        >
+                                            <i 
+                                            className={`fa fa-spinner fa-pulse fa-fw ${!isLoading ? 'is-invisible' : ''}`}
+                                            ></i>
+                                            Submit
+                                        </button>
                                     </div>
                                     <div className="control">
                                         <button 
                                         className="button is-text"
                                         onClick={this.handleModalClose.bind(this)}
-                                        >Cancel</button>
+                                        >
+                                            Cancel
+                                        </button>
                                     </div>
                                 </div>
                             </div>

@@ -10,13 +10,13 @@ export default class Panel extends Component {
 
         this.state = {
             isRetracted: true,
-            isFoldedItems: props.itinerary.map( () => false ),
+            isFoldedItems: props.itinerary.events.map( () => false ),
         }
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            isFoldedItems: nextProps.itinerary.map( () => false )
+            isFoldedItems: nextProps.itinerary.events.map( () => false )
         })
     }
 
@@ -39,9 +39,9 @@ export default class Panel extends Component {
 
     render() {
         const { isRetracted, isFoldedItems } = this.state;
-        let { itinerary } = this.props;
+        const { itinerary } = this.props;
 
-        itinerary = itinerary.map( (event, i) => {
+        const events = itinerary.events.map( (event, i) => {
             event.isFolded = isFoldedItems[i];
             event.handleFoldClick = this.handleFoldFactory(i);
             return event;
@@ -88,7 +88,7 @@ export default class Panel extends Component {
 
                 <div className="columns">
                     <div className="column is-12">
-                        <ListMarkers itinerary={itinerary} />
+                        <ListMarkers events={events} />
                     </div>
                 </div>
             </div>
@@ -101,11 +101,11 @@ export default class Panel extends Component {
 class ListMarkers extends Component {
 
     render() {
-        const { itinerary } = this.props;
+        const { events } = this.props;
         return (
             <aside className="menu">            
                 <ul className="menu-list">
-                    { itinerary.map( (event, i) => <MarkerItem 
+                    { events.map( (event, i) => <MarkerItem 
                     key={`marker${i}`} 
                     event={event}
                     />)}
