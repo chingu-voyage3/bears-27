@@ -185,6 +185,16 @@ class AppContainer extends Component {
     window.location.replace("/auth/google");
   }
 
+  handleLogout() {
+    axios.get("/logout")
+    .then( (response) => {
+      window.location.replace("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
+
   setCategory(index) {
     this.setState({
       categoryIndex: index
@@ -215,6 +225,7 @@ class AppContainer extends Component {
       itinerary={itinerary}
       login= {{
         handleGoogleLogin: this.handleGoogleLogin.bind(this),
+        handleLogout: this.handleLogout.bind(this),
         auth: auth
       }}
       
@@ -287,6 +298,7 @@ class App extends Component {
             />
             <UserInfo 
             auth={login.auth}
+            handleLogout={login.handleLogout}
             />
             <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
