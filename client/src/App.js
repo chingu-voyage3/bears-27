@@ -31,7 +31,9 @@ class AppContainer extends Component {
       suggestions: [],
       activeSuggestion: undefined,
       isSearching: false,
-      itinerary: [],
+      itinerary: {
+        events: []
+      },
       categoryIndex: 0,
       auth: {
         isLoggedIn: false,
@@ -40,7 +42,7 @@ class AppContainer extends Component {
       }
     }
 
-    this.getItinerary = debounce( this.getItinerary.bind(this), 750);
+    this.getItinerary = debounce( this.getItinerary.bind(this), 1000);
   }
 
   componentDidMount() {
@@ -50,7 +52,7 @@ class AppContainer extends Component {
   }
 
   componentDidUpdate() {
-    this.getItinerary();
+    /* this.getItinerary(); */
   }
 
   getProfile() {
@@ -170,11 +172,14 @@ class AppContainer extends Component {
   }
 
   getItinerary() {
-    console.log("GETING ITINERARY");
-
     axios.get('/api/itineraries/mine')
     .then((response) => {
-      console.log("GOT ITINERARY", response.data);
+      const { current_itinerary } = response.data;
+      if(!current_itinerary) throw Error("No current_itinerary in response");
+      console.log("CURRENT ITI", current_itinerary);
+      this.setState({
+        itinerary: current_itinerary
+      })
     })
     .catch( (err) => {
       console.log(err);
@@ -183,6 +188,16 @@ class AppContainer extends Component {
 
   handleGoogleLogin() {
     window.location.replace("/auth/google");
+  }
+
+  handleLogout() {
+    axios.get("/logout")
+    .then( (response) => {
+      window.location.replace("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    })
   }
 
   setCategory(index) {
@@ -212,9 +227,13 @@ class AppContainer extends Component {
         remove: this.removeLoc.bind(this),
         setFloater: this.setFloatLoc.bind(this)
       }}
-      itinerary={itinerary}
+      itinerary={{
+        get: this.getItinerary.bind(this),
+        data: itinerary
+      }}
       login= {{
         handleGoogleLogin: this.handleGoogleLogin.bind(this),
+        handleLogout: this.handleLogout.bind(this),
         auth: auth
       }}
       
@@ -251,20 +270,6 @@ class App extends Component {
           },
           isFolded: false
       };
-      itinerary[1] = {
-          name: "Test place",
-          address: [
-              "46TH Street Between Broadway And 9th Ave",
-              "Manhattan, NY 10036"
-          ],
-          phone: '+3 3334 1412',
-          attendance: 32,
-          location: {
-              latitude: (Math.random()-0.5)*100,
-              longitude: (Math.random()-0.5)*100
-          },
-          isFolded: true
-      };
   } */
 
 
@@ -279,6 +284,7 @@ class App extends Component {
             <EventCard 
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
+            getItinerary={itinerary.get}
             />
             <CategoryChooser 
             current={categoryIndex} 
@@ -287,6 +293,7 @@ class App extends Component {
             />
             <UserInfo 
             auth={login.auth}
+            handleLogout={login.handleLogout}
             />
             <SearchInput search={handleInputSearch} isSearching={isSearching}/>
             <Map 
@@ -298,7 +305,7 @@ class App extends Component {
             isSearching={isSearching}
             />
             <Panel 
-            itinerary={itinerary} 
+            itinerary={itinerary.data} 
             />
             {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
           </div>
