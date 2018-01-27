@@ -38,10 +38,10 @@ itinerarySchema.statics.addEvent = (time,userId, itID, eventID, callback) => {
         // Check to see if an itinerary was either shared with the provided user, or belongs to them
         // As of right now I have decided that you shouldnt be able to add events to a public itinerary
         // That wasnt shared with you.
-        if((result.owner == userId) || result.sharedWith.includes(userId)){
-        result.events.push({time: time, eventData: eventID})
-        result.save();
-        callback(null, result)
+        if((result.owner == userId) || result.sharedWith.includes(userId)) {
+            result.events.push({time: time, eventData: eventID})
+            result.save();
+            callback(null, result)
         }
         else {
             throw new Error("You do not have permission to edit this itinerary")

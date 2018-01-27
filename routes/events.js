@@ -25,14 +25,13 @@ router.post('/', function(req, res){
     }
     else{
     TripEvent.createNewEvent("yelp", yelpID, date, function(err, result){
-        if(err | !result){
-            res.status(500).send('Failed to create event')
-        }
-        else {
-            Itinerary.addEvent(date,req.user._id, req.user.current_itinerary, result._id, ()=>{})
-            res.send(result);
+        if(err || !result) return res.status(500).send('Failed to create event');
 
-        }
+        Itinerary.addEvent(date,req.user._id, req.user.current_itinerary, result._id, (err, results)=>{
+            console.log(err, results);
+        });
+        /* res.send(result); */
+        res.sendStatus(200);
     })
 }
 
