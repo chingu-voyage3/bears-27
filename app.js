@@ -9,13 +9,20 @@ var passport = require('passport');
 var cors = require('cors');
 
 const MONGO_URI = process.env.MONGO_DB
-var app = express();
-mongoose.Promise = global.Promise;
 
+var app = express();
+
+//Mongoose stuff
+mongoose.Promise = global.Promise;
+//mongoose.set('debug', true);
 mongoose.connect(MONGO_URI, {
   useMongoClient: true
+}, function(err) {
+  var admin = new mongoose.mongo.Admin(mongoose.connection.db);
+  admin.buildInfo(function (err, info) {
+     console.log("Mongo version: " + info.version);
+  });
 });
-
 
 //CORS
 app.use(cors());
