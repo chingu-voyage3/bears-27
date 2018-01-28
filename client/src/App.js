@@ -206,6 +206,31 @@ class AppContainer extends Component {
     })
   }
 
+  handleAddEvent(yelpID, date) {
+
+    axios.post('/api/events', {
+      yelpID: yelpID,
+      date: date
+    })
+    .then( (results) => {
+        this.setActiveSuggestion(undefined);
+        setTimeout( () => this.getItinerary(), 100);
+    })
+    .catch( (err) => {
+        console.log("Error submiting place/event", err);
+    })
+  }
+
+  handleRemoveEvent(itineraryID, eventIndex ){
+    axios.get(`/api/itineraries/delete/${itineraryID}/${eventIndex}`)
+    .then( (results) => {
+        setTimeout( () => this.getItinerary(), 50);
+    })
+    .catch( (err) => {
+        console.log("Error deleting event", err);
+    })
+  }
+
   render() {
     const { locs, floatingLoc, suggestions, activeSuggestion, 
       isSearching, itinerary, categoryIndex, auth } = this.state;
@@ -228,6 +253,8 @@ class AppContainer extends Component {
         setFloater: this.setFloatLoc.bind(this)
       }}
       itinerary={{
+        removeEvent: this.handleRemoveEvent.bind(this),
+        addEvent: this.handleAddEvent.bind(this),
         get: this.getItinerary.bind(this),
         data: itinerary
       }}
@@ -255,23 +282,6 @@ class App extends Component {
       login
     } = this.props;
 
-    /* if( !itinerary.length ) {
-      itinerary[0] = {
-          name: "Test place",
-          address: [
-              "46TH Street Between Broadway And 9th Ave",
-              "Manhattan, NY 10036"
-          ],
-          phone: '+3 3334 1412',
-          attendance: 32,
-          location: {
-              latitude: (Math.random()-0.5)*100,
-              longitude: (Math.random()-0.5)*100
-          },
-          isFolded: false
-      };
-  } */
-
 
     return (
       <div className="App">
@@ -285,6 +295,7 @@ class App extends Component {
             suggestion={activeSuggestion} 
             setActiveSuggestion={setActiveSuggestion}
             getItinerary={itinerary.get}
+            addEvent={itinerary.addEvent}
             />
             <CategoryChooser 
             current={categoryIndex} 
@@ -305,6 +316,7 @@ class App extends Component {
             isSearching={isSearching}
             />
             <Panel 
+            removeEvent={itinerary.removeEvent}
             itinerary={itinerary.data} 
             />
             {/* <MapPopup loc={floatingLoc} locHelpers={locHelpers} /> */}
