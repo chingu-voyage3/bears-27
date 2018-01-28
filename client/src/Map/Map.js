@@ -121,6 +121,8 @@ class Map extends Component {
             return oldLoc[0]!==newLoc[0] && oldLoc[1]!==newLoc[1];
         }));
 
+        if(toAdd.length) map.panTo(toAdd[0]);
+        /*
         //Add new markers
         const newMarkers = toAdd.map( (e) =>  L.marker(e, {icon: markerIcon}) );
         newMarkers.forEach( (newMarker) => newMarker.addTo(map));
@@ -134,6 +136,7 @@ class Map extends Component {
         this.setState({
             markerLayers: [ ...markerLayers, ...newMarkers ]
         });
+        */
 
         //Remove markers
         toRemoveFlags.forEach( (e,i) => {
