@@ -27,7 +27,10 @@ export default class EventCard extends Component {
 
     componentWillReceiveProps(nextProps) {
         const { suggestion } = nextProps;
-        if(!suggestion) return;
+        if(!suggestion) {
+            this.setState({ isLoading: false });
+            return;
+        };
         this.setState({
             yelpID: suggestion.id
         })
@@ -49,26 +52,13 @@ export default class EventCard extends Component {
     }
 
     handleSubmit() {
-        const { setActiveSuggestion, getItinerary } = this.props;
+        const { addEvent } = this.props;
         const { yelpID, date } = this.state;
         if(!yelpID || !date ) return;
 
         this.setState({ isLoading: true })
 
-        axios.post('/api/events', {
-            yelpID: yelpID,
-            date: date
-        })
-        .then( (results) => {
-            console.log("RESPONSE POST", results.data);
-            this.setState({ isLoading: false })
-            setActiveSuggestion(undefined);
-            setTimeout( () => getItinerary(), 500);
-        })
-        .catch( (err) => {
-            this.setState({ isLoading: false })
-            console.log("Error submiting", err);
-        })
+        addEvent(yelpID, date);
     }
 
     render() {

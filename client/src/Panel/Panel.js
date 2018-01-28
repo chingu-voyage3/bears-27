@@ -37,13 +37,21 @@ export default class Panel extends Component {
         this.setState({ isRetracted: !this.state.isRetracted });
     }
 
+    
+    handleRemoveEventFactory(itineraryID, eventID ) {
+        const { removeEvent } = this.props;
+        return () => removeEvent(itineraryID, eventID);
+    }
+
+
     render() {
         const { isRetracted, isFoldedItems } = this.state;
-        const { itinerary } = this.props;
+        const { itinerary, removeEvent } = this.props;
 
         const events = itinerary.events.map( (event, i) => {
             event.isFolded = isFoldedItems[i];
             event.handleFoldClick = this.handleFoldFactory(i);
+            event.handleRemoveClick = this.handleRemoveEventFactory( itinerary._id, i)
             return event;
         })
         
@@ -56,8 +64,8 @@ export default class Panel extends Component {
             }}
             classNames="fade"
             >
-            <div id="panelTriggerContainer">
-                <div id="panelTriggerIn" onClick={this.handleRetract.bind(this)}>
+            <div id="panelTriggerContainer" onClick={this.handleRetract.bind(this)}>
+                <div id="panelTriggerIn" >
                     <i className="fa fa-list grow" aria-hidden="true"></i>
                 </div>
             </div>
@@ -101,7 +109,7 @@ export default class Panel extends Component {
 class ListMarkers extends Component {
 
     render() {
-        const { events } = this.props;
+        const { events, removeEvent } = this.props;
         return (
             <aside className="menu">            
                 <ul className="menu-list">
@@ -139,7 +147,7 @@ class MarkerItem extends Component {
                 <div className="card">
                     <header className="card-header">
                         <div className="card-header-title card-header-title-list">
-                            { event.name }
+                            { event.eventData.locationName }
                         </div>
                         <a className="card-header-icon card-header-icon-list" 
                         onClick={event.handleFoldClick}
@@ -152,26 +160,25 @@ class MarkerItem extends Component {
                         </a>
                     </header>
                     { !event.isFolded  &&
-                    <div>
+                    <div className="card-content-container">
                         <div className="card-content">
                             <div className="content">
                                 <div className="list-item-field list-item-address">
-                                    { event.address.filter( (n) => {
-                                        return n !== '[no name]';
-                                    }).join(', ').substring(0, 30) + '...' }
+                                    { event.eventData.address }
                                 </div>
-                                <div className="list-item-field list-item-phone">{ event.phone }</div>
+                                <div className="list-item-field list-item-date">{ event.eventData.eventDate }</div>
                                 <div className="list-item-field list-item-attendance">
-                                    Attendance: <strong>{event.attendance}</strong>
+                                    Confirmed attending: <strong>{event.eventData.confirmedAttending.length}</strong>
                                 </div>
-                                <div className="list-item-field list-item-location">
-                                    { event.location.latitude.toFixed(2) }, {event.location.longitude.toFixed(2)}
+                                <div className="list-item-field list-item-attendance">
+                                    Possibly attending: <strong>{event.eventData.possiblyAttending.length}</strong>
                                 </div>
+                                
                             </div>
                         </div>
                         <footer className="card-footer">
-                            <a className="card-footer-item is-size-7">Details</a>
-                            <a className="card-footer-item is-size-7">Delete</a>
+                            <a className="card-footer-item is-size-7 card-footer-item-disabled">Details</a>
+                            <a className="card-footer-item is-size-7" onClick={event.handleRemoveClick}>Delete</a>
                         </footer>
                     </div>
                     } 

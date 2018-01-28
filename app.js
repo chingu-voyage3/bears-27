@@ -15,9 +15,7 @@ var app = express();
 //Mongoose stuff
 mongoose.Promise = global.Promise;
 //mongoose.set('debug', true);
-mongoose.connect(MONGO_URI, {
-  useMongoClient: true
-}, function(err) {
+mongoose.connect(MONGO_URI, function(err) {
   var admin = new mongoose.mongo.Admin(mongoose.connection.db);
   admin.buildInfo(function (err, info) {
      console.log("Mongo version: " + info.version);
